@@ -15,7 +15,10 @@ export function ImageGrid({ images, onRemove }: ImageGridProps): React.JSX.Eleme
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
       {images.map((img) => (
-        <div key={img.id} className="relative group rounded-lg overflow-hidden bg-surface border border-border">
+        <div
+          key={img.id}
+          className="relative group rounded-lg overflow-hidden bg-surface border border-border"
+        >
           <img
             src={img.previewUrl}
             alt={img.file.name}

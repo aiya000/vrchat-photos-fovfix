@@ -16,10 +16,7 @@ export const FovSchema = z.number().int().min(1).max(179);
  * source radius: r_src = A*r^4 + B*r^3 + C*r^2 + D*r
  * where A=0, B=k2, C=0, D=k4.
  */
-export function applyFovFix(
-  sourceCanvas: HTMLCanvasElement,
-  targetFov: number,
-): HTMLCanvasElement {
+export function applyFovFix(sourceCanvas: HTMLCanvasElement, targetFov: number): HTMLCanvasElement {
   const parsed = FovSchema.safeParse(targetFov);
   if (!parsed.success) {
     throw new Error(`Invalid FOV value: ${String(targetFov)}`);
