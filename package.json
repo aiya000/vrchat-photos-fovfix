@@ -6,9 +6,13 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint",
-    "format": "prettier --write 'src/**/*.{ts,tsx}'",
-    "format:check": "prettier --check 'src/**/*.{ts,tsx}'"
+    "typecheck": "tsc --noEmit",
+    "lint": "bun lint:eslint && bun lint:prettier",
+    "lint:eslint": "eslint .",
+    "lint:prettier": "prettier --check 'src/**/*.{ts,tsx}'",
+    "fix": "bun fix:eslint && bun fix:prettier",
+    "fix:eslint": "eslint --fix .",
+    "fix:prettier": "prettier --write 'src/**/*.{ts,tsx}'"
   },
   "dependencies": {
     "jszip": "^3.10.1",
