@@ -3,7 +3,26 @@ import { z } from "zod/v4";
 const LocaleSchema = z.enum(["en", "ja"]);
 type Locale = z.infer<typeof LocaleSchema>;
 
-const translations = {
+interface Translations {
+  siteTitle: string;
+  siteDescription: string;
+  uploadTitle: string;
+  uploadDescription: string;
+  uploadButton: string;
+  fovLabel: string;
+  fovDescription: string;
+  fixButton: string;
+  fixingButton: string;
+  downloadButton: string;
+  downloadingButton: string;
+  originalLabel: string;
+  fixedLabel: string;
+  clearButton: string;
+  imageCount: (n: number) => string;
+  processingProgress: (current: number, total: number) => string;
+}
+
+const translations: Record<Locale, Translations> = {
   en: {
     siteTitle: "VRChat Photos Fovfix Tool",
     siteDescription: "Fix FOV distortion in VRChat photos",
@@ -42,9 +61,7 @@ const translations = {
     processingProgress: (current: number, total: number): string =>
       `処理中 ${String(current)} / ${String(total)}...`,
   },
-} as const satisfies Record<Locale, Record<string, string | ((...args: never[]) => string)>>;
-
-type Translations = (typeof translations)["en"];
+};
 
 export function detectLocale(): Locale {
   if (typeof navigator === "undefined") {
