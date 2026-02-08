@@ -4,7 +4,6 @@ import nextTs from "eslint-config-next/typescript";
 import tseslint from "@typescript-eslint/eslint-plugin";
 import tsParser from "@typescript-eslint/parser";
 import prettierConfig from "eslint-config-prettier";
-import prettierPlugin from "eslint-plugin-prettier";
 
 const eslintConfig = defineConfig([
   ...nextVitals,
@@ -14,7 +13,6 @@ const eslintConfig = defineConfig([
     files: ["**/*.ts", "**/*.tsx"],
     plugins: {
       "@typescript-eslint": tseslint,
-      prettier: prettierPlugin,
     },
     languageOptions: {
       parser: tsParser,
@@ -26,7 +24,6 @@ const eslintConfig = defineConfig([
     rules: {
       ...tseslint.configs["strict-type-checked"]?.rules,
       ...prettierConfig.rules,
-      "prettier/prettier": "error",
       "@typescript-eslint/no-explicit-any": "error",
       "@typescript-eslint/no-unsafe-assignment": "error",
       "@typescript-eslint/no-unsafe-call": "error",
