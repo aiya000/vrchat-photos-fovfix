@@ -1,36 +1,94 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# VRChat写真歪み修正ツール 📸✨
 
-## Getting Started
+VRChatで撮影した写真のFOV（視野角）歪みを、ブラウザ上で簡単に修正できるWebツールです！
 
-First, run the development server:
+## 🎯 このツールについて
+
+VRChatのカメラはデフォルトで60°のFOVを使用していますが、撮影された写真には**樽型歪み（barrel distortion）** が含まれています。
+特に広角で撮影した写真では、画面の端が歪んで見えることがありますよね。
+
+このツールを使えば、その歪みを**ブラウザ上で簡単に補正**できます！
+画像をアップロードする必要はありますが、処理は全てあなたのブラウザ内で完結するため、**プライバシーも安心**です 🔒
+
+## ✨ 特徴
+
+- 🖼️ **複数の写真を一括処理** - ドラッグ&ドロップで簡単アップロード
+- 🎛️ **FOV値を自由に調整** - デフォルトは50°（推奨値）
+- 👀 **ビフォー・アフター比較** - 修正前後を並べて確認できます
+- 📦 **ZIP一括ダウンロード** - 複数枚の場合は自動でZIPに
+- 🌐 **完全ブラウザ内処理** - 画像がサーバーに送信されることはありません
+- 🌙 **ダークモード対応** - システム設定に合わせて自動切替
+- 🇯🇵🇬🇧 **日英対応** - ブラウザの言語設定を自動検出
+
+## 🚀 使い方
+
+### オンライン版
+
+このツールはWebアプリとしてデプロイされています。ブラウザでアクセスするだけですぐに使えます！
+
+1. ツールのページにアクセス
+2. VRChatで撮影した写真をドラッグ&ドロップ（または「写真を選択」ボタンをクリック）
+3. 必要に応じてFOV値を調整（デフォルト: 50°）
+4. 「修正」ボタンをクリック
+5. 修正結果を確認して、「ダウンロード」ボタンで保存
+
+### ローカルで実行
+
+開発環境でローカルに実行することもできます：
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# 依存関係をインストール
+bun install
+
+# 開発サーバーを起動
+bun run dev
+
+# ブラウザで http://localhost:3000 を開く
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 本番ビルド
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+# 静的サイトとしてビルド
+bun run build
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+# ビルド結果は out/ ディレクトリに出力されます
+```
 
-## Learn More
+## 🔧 技術スタック
 
-To learn more about Next.js, take a look at the following resources:
+- **Next.js 16** - React フレームワーク（静的サイト生成）
+- **TypeScript** - 型安全な開発
+- **Tailwind CSS** - モダンなスタイリング
+- **Bun** - 高速なパッケージマネージャー
+- **JSZip** - 複数画像のZIP圧縮
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 📐 FOV補正アルゴリズム
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+このツールは、ImageMagickのbarrel distortion補正式を元にしています：
 
-## Deploy on Vercel
+```
+k = targetFov / 60
+k2 = (k - k^3) / 6
+k4 = k
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+各出力ピクセルについて:
+  source_r = k2 * r^3 + k4 * r
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+バイリニア補間により、滑らかで高品質な出力を実現しています。
+
+参考: [autch/gist](https://gist.github.com/autch/6c30693255e1d3e070a7d11c62eb0e73), [chigirits/gist](https://gist.github.com/chigirits/55d6eed4396ed5da64878af2b43111ed)
+
+## 📝 ライセンス
+
+このプロジェクトは[MITライセンス](LICENSE)の下で公開されています。
+
+## 🤝 コントリビューション
+
+バグ報告や機能要望は、[Issues](https://github.com/aiya000/vrchat-photos-fovfix/issues)からお気軽にどうぞ！
+プルリクエストも歓迎します 🎉
+
+---
+
+VRChatでの素敵な思い出を、さらに美しく残しましょう！ 📸✨
