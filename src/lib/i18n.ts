@@ -65,13 +65,13 @@ const translations: Record<Locale, Translations> = {
 
 export function detectLocale(): Locale {
   if (typeof navigator === "undefined") {
-    return "en";
-  }
-  const lang = navigator.language;
-  if (lang.startsWith("ja")) {
     return "ja";
   }
-  return "en";
+  const lang = navigator.language;
+  if (lang.startsWith("en")) {
+    return "en";
+  }
+  return "ja";
 }
 
 export function getTranslations(locale: Locale): Translations {

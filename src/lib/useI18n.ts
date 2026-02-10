@@ -1,6 +1,6 @@
 "use client";
 
-import { useSyncExternalStore } from "react";
+import { useSyncExternalStore, useEffect } from "react";
 import { detectLocale, getTranslations, type Locale, type Translations } from "./i18n";
 
 function subscribe(): () => void {
@@ -12,10 +12,15 @@ function getSnapshot(): Locale {
 }
 
 function getServerSnapshot(): Locale {
-  return "en";
+  return "ja";
 }
 
 export function useI18n(): { locale: Locale; t: Translations } {
   const locale = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+  
+  useEffect(() => {
+    document.documentElement.lang = locale;
+  }, [locale]);
+  
   return { locale, t: getTranslations(locale) };
 }
