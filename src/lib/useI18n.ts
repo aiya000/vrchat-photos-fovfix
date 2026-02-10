@@ -12,7 +12,7 @@ function getSnapshot(): Locale {
 }
 
 function getServerSnapshot(): Locale {
-  return "en";
+  return "ja";
 }
 
 export function useI18n(): { locale: Locale; t: Translations } {

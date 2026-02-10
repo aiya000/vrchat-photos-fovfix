@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "VRChat Photos Fovfix Tool",
-  description: "Fix FOV distortion in VRChat photos",
+  title: "VRChat写真歪み修正ツール",
+  description: "VRChat写真のFOV歪みを修正します",
 };
 
 export default function RootLayout({
@@ -12,7 +12,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>): React.JSX.Element {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="ja" suppressHydrationWarning>
       <body>{children}</body>
     </html>
   );
