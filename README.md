@@ -29,8 +29,19 @@ To learn more about Next.js, take a look at the following resources:
 
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
+## Deployment
+
+This project is automatically deployed to GitHub Pages when changes are pushed to the `main` branch.
+
+- Live site: https://aiya000.github.io/vrchat-photos-fovfix/
+- The deployment workflow is configured in `.github/workflows/deploy.yml`
+
+### Manual Deployment
+
+You can also trigger a deployment manually from the Actions tab in GitHub.
+
 ## Deploy on Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Alternatively, you can deploy your Next.js app to the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
