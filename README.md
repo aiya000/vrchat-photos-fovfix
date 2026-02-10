@@ -2,6 +2,10 @@
 
 VRChatで撮影した写真のFOV（視野角）歪みを、ブラウザ上で簡単に修正できるWebツールです！
 
+## 補正例
+
+![修正前後の比較](https://github.com/user-attachments/assets/ea2978b8-357f-4d12-8c71-6db82919c5b1)
+
 ## 🎯 このツールについて
 
 VRChatのカメラはデフォルトで60°のFOVを使用していますが、撮影された写真には**樽型歪み（barrel distortion）** が含まれています。
