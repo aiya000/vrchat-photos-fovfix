@@ -19,7 +19,6 @@ export function useI18n(): { locale: Locale; t: Translations } {
   const locale = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
   
   useEffect(() => {
-    // Update the document's lang attribute to match the detected locale
     document.documentElement.lang = locale;
   }, [locale]);
   
