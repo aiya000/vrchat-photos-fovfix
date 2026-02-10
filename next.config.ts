@@ -2,7 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   output: "export",
-  basePath: process.env.GITHUB_ACTIONS ? "/vrchat-photos-fovfix" : undefined,
+  ...(process.env.GITHUB_ACTIONS && { basePath: "/vrchat-photos-fovfix" }),
   images: {
     unoptimized: true,
   },
