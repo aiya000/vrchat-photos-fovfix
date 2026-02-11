@@ -1,7 +1,10 @@
 import type { Metadata, Viewport } from 'next'
 import './globals.css'
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://aiya000.github.io/vrchat-photos-fovfix'
+const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL !== undefined
+    ? process.env.NEXT_PUBLIC_SITE_URL
+    : 'https://aiya000.github.io/vrchat-photos-fovfix'
 
 export const metadata: Metadata = {
   title: 'VRChat写真歪み修正ツール',
