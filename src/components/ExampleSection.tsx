@@ -17,7 +17,7 @@ export function ExampleSection({ t }: ExampleSectionProps): React.JSX.Element {
           <p className="text-xs text-muted text-center font-medium">{t.exampleBefore}</p>
           <div className="aspect-[3/4]">
             <img
-              src="https://github.com/user-attachments/assets/6183ee22-b4f8-405b-b0e2-e90bb1a900e3"
+              src="/examples/before.png"
               alt={t.exampleBeforeAlt}
               className="w-full h-full object-cover rounded-lg border border-border"
               loading="lazy"
@@ -28,7 +28,7 @@ export function ExampleSection({ t }: ExampleSectionProps): React.JSX.Element {
           <p className="text-xs text-muted text-center font-medium">{t.exampleAfter}</p>
           <div className="aspect-[3/4]">
             <img
-              src="https://github.com/user-attachments/assets/f9307954-b55a-418d-8692-e9d2c583e07d"
+              src="/examples/after.png"
               alt={t.exampleAfterAlt}
               className="w-full h-full object-cover rounded-lg border border-border"
               loading="lazy"
