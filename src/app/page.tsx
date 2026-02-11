@@ -244,7 +244,7 @@ export default function Home(): React.JSX.Element {
 
         <footer className="text-center pt-8 mt-8 border-t border-border/50">
           <p className="text-xs text-muted">
-            💡 {t.cliVersionLink}:{" "}
+            <span aria-hidden="true">💡</span> {t.cliVersionLink}:{" "}
             <a
               href="https://github.com/aiya000/vrcss-fovfix"
               target="_blank"
