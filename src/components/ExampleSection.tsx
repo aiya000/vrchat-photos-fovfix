@@ -6,9 +6,9 @@ interface ExampleSectionProps {
   t: Translations;
 }
 
-const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
-
 export function ExampleSection({ t }: ExampleSectionProps): React.JSX.Element {
+  const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
+
   return (
     <section className="rounded-xl border border-border bg-surface p-4 md:p-6">
       <h2 className="text-lg font-semibold mb-2">{t.exampleTitle}</h2>
