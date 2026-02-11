@@ -146,4 +146,53 @@ test.describe('VRChat Photos FOV Fix - 正常系E2Eテスト', () => {
     const downloadButton = page.getByRole('button', { name: /ダウンロード|Download/i })
     // ここでは、処理が完了しないか、エラーが表示されることを想定
   })
+
+  test('FOV補正値を何度か変えて、修正を再実行する', async ({ page }) => {
+    await page.goto('/')
+    
+    const fileInputLocator = page.locator('input[type="file"]')
+    const testImagePath = path.join(__dirname, 'fixtures', 'test-photo.png')
+    
+    // 画像をアップロード
+    await fileInputLocator.setInputFiles(testImagePath)
+    await expect(page.locator('img[src*="blob:"]').first()).toBeVisible({ timeout: 10000 })
+    
+    const fovInput = page.locator('input[id="fov-input"]').or(page.locator('input[type="number"]'))
+    const fixButton = page.getByRole('button', { name: /修正|Fix/i })
+    const downloadButton = page.getByRole('button', { name: /ダウンロード|Download/i })
+    
+    // 1回目: FOV=60で修正
+    await fovInput.first().fill('60')
+    await expect(fovInput.first()).toHaveValue('60')
+    await fixButton.click()
+    await expect(downloadButton).toBeVisible({ timeout: 30000 })
+    
+    // 修正後の画像が表示されていることを確認
+    const images = page.locator('img[src*="blob:"]')
+    let imageCount = await images.count()
+    expect(imageCount).toBeGreaterThanOrEqual(2) // 元画像と修正後画像
+    
+    // 2回目: FOV=45に変更して再修正
+    await fovInput.first().fill('45')
+    await expect(fovInput.first()).toHaveValue('45')
+    await fixButton.click()
+    await expect(downloadButton).toBeVisible({ timeout: 30000 })
+    
+    // 再度修正後の画像が表示されていることを確認
+    imageCount = await images.count()
+    expect(imageCount).toBeGreaterThanOrEqual(2)
+    
+    // 3回目: FOV=70に変更して再修正
+    await fovInput.first().fill('70')
+    await expect(fovInput.first()).toHaveValue('70')
+    await fixButton.click()
+    await expect(downloadButton).toBeVisible({ timeout: 30000 })
+    
+    // 最終的に修正後の画像が表示されていることを確認
+    imageCount = await images.count()
+    expect(imageCount).toBeGreaterThanOrEqual(2)
+    
+    // ダウンロードボタンが有効であることを確認
+    await expect(downloadButton).toBeEnabled()
+  })
 })

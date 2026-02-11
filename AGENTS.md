@@ -98,6 +98,21 @@ if (hoge) {
 if (hoge) ...
 ```
 
+### Zod Schema Naming
+Use lowerCamelCase for Zod schema variable names:
+
+**Required:**
+```ts
+const fovSchema = z.number().int().min(1).max(179)
+const userProfileSchema = z.object({ ... })
+```
+
+**Not allowed:**
+```ts
+const FovSchema = z.number().int().min(1).max(179)  // ❌ PascalCase
+const UserProfileSchema = z.object({ ... })  // ❌ PascalCase
+```
+
 ### ESLint Rules
 **IMPORTANT: Do not disable ESLint rules without a very strong justification.**
 
