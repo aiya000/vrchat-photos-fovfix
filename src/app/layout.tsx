@@ -33,11 +33,20 @@ export const metadata: Metadata = {
     title: 'VRChat写真歪み修正ツール',
     description: 'VRChat写真のFOV歪みを修正します',
     siteName: 'VRChat写真歪み修正ツール',
+    images: [
+      {
+        url: '/ogp-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'VRChat写真歪み修正ツール',
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'VRChat写真歪み修正ツール',
     description: 'VRChat写真のFOV歪みを修正します',
+    images: ['/ogp-image.png'],
   },
   metadataBase: new URL(siteUrl),
 }
