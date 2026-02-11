@@ -23,7 +23,6 @@ export function ImageGrid({ images, onRemove }: ImageGridProps): React.JSX.Eleme
             className="w-full aspect-square object-cover"
             width={300}
             height={300}
-            unoptimized
           />
           <button
             type="button"
