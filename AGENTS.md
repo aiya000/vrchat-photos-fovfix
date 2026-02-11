@@ -98,6 +98,16 @@ if (hoge) {
 if (hoge) ...
 ```
 
+### ESLint Rules
+**IMPORTANT: Do not disable ESLint rules without a very strong justification.**
+
+- In principle, do not disable ESLint rules (using `eslint-disable` comments)
+- If you must disable a rule, you **must** report it in:
+  - The PR description, explaining why the rule was disabled
+  - Or in responses to users/reviewers
+- Always prefer fixing the code to comply with ESLint rules rather than disabling them
+- If a rule consistently causes issues, discuss removing it from the ESLint configuration instead of adding inline disables
+
 ## Project Context
 
 ### Technology Stack

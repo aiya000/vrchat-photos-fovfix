@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import type { UploadedImage } from '@/lib/types'
 
 interface ImageGridProps {
@@ -16,7 +17,13 @@ export function ImageGrid({ images, onRemove }: ImageGridProps): React.JSX.Eleme
     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
       {images.map((img) => (
         <div key={img.id} className="relative group rounded-lg overflow-hidden bg-surface border border-border">
-          <img src={img.previewUrl} alt={img.file.name} className="w-full aspect-square object-cover" />
+          <Image
+            src={img.previewUrl}
+            alt={img.file.name}
+            className="w-full aspect-square object-cover"
+            width={300}
+            height={300}
+          />
           <button
             type="button"
             onClick={() => {

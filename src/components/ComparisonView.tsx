@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import type { ProcessedImage } from '@/lib/types'
 import type { Translations } from '@/lib/i18n'
 
@@ -21,18 +22,22 @@ export function ComparisonView({ images, t }: ComparisonViewProps): React.JSX.El
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <p className="text-xs text-muted mb-1 text-center">{t.originalLabel}</p>
-              <img
+              <Image
                 src={img.originalUrl}
                 alt={`Original: ${img.fileName}`}
                 className="w-full rounded-lg border border-border"
+                width={800}
+                height={600}
               />
             </div>
             <div>
               <p className="text-xs text-muted mb-1 text-center">{t.fixedLabel}</p>
-              <img
+              <Image
                 src={img.fixedUrl}
                 alt={`Fixed: ${img.fileName}`}
                 className="w-full rounded-lg border border-border"
+                width={800}
+                height={600}
               />
             </div>
           </div>

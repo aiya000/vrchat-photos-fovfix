@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import type { Translations } from '@/lib/i18n'
 import { normalizeBasePath } from '../../basePath.config'
 
@@ -19,22 +20,26 @@ export function ExampleSection({ t }: ExampleSectionProps): React.JSX.Element {
         <div className="space-y-1">
           <p className="text-xs text-muted text-center font-medium">{t.exampleBefore}</p>
           <div className="aspect-[9/16]">
-            <img
+            <Image
               src={`${basePath}/examples/before.png`}
               alt={t.exampleBeforeAlt}
               className="w-full h-full object-cover rounded-lg border border-border"
               loading="lazy"
+              width={1080}
+              height={1920}
             />
           </div>
         </div>
         <div className="space-y-1">
           <p className="text-xs text-muted text-center font-medium">{t.exampleAfter}</p>
           <div className="aspect-[9/16]">
-            <img
+            <Image
               src={`${basePath}/examples/after.png`}
               alt={t.exampleAfterAlt}
               className="w-full h-full object-cover rounded-lg border border-border"
               loading="lazy"
+              width={1080}
+              height={1920}
             />
           </div>
         </div>
