@@ -40,6 +40,64 @@ This project has chosen Bun for its speed and modern features. Using other packa
 - Prefer code clarity over brevity
 - Let the code speak for itself when possible
 
+### Null/Undefined and Falsy Value Handling
+When dealing with types that can be both falsy and null/undefined, use explicit checks to avoid unnecessary type narrowing:
+
+**Good examples:**
+```ts
+const foo: string | null = something;
+if (foo === null) {
+  // This allows empty string '' to pass through
+  throw new Error('foo is null');
+}
+```
+
+```ts
+const bar: number | undefined = something;
+if (bar === undefined) {
+  // This allows 0 to pass through
+  throw new Error('bar is undefined');
+}
+```
+
+**The principle:** Don't over-narrow types unnecessarily. If you mean to check only for `null`, use `foo === null`, not `!foo`.
+
+**Exception:** You may use `!foo` when you explicitly want to check for all falsy values including null/undefined:
+```ts
+// OK: Intentionally checking for empty string OR null
+if (!foo) {
+  // handles '', null, undefined, 0, false, etc.
+}
+```
+
+**Special case for null and undefined together:**
+Always handle `null` and `undefined` separately with explicit checks:
+```ts
+// Required pattern
+if (foo === null || foo === undefined) { ... }
+if (foo !== null && foo !== undefined) { ... }
+
+// Don't mix with falsy checks
+// ❌ BAD: if (!foo || foo === null)
+```
+
+For types like `SomePrimitive | null | undefined`, separate all conditions with logical operators.
+
+### Control Flow Braces
+Always use braces with control flow statements, even for single-line bodies:
+
+**Required:**
+```ts
+if (hoge) {
+  ...
+}
+```
+
+**Not allowed:**
+```ts
+if (hoge) ...
+```
+
 ## Project Context
 
 ### Technology Stack

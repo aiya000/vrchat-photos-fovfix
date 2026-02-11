@@ -6,8 +6,24 @@ interface ExampleSectionProps {
   t: Translations;
 }
 
+const normalizeBasePath = (raw: string | undefined): string => {
+  if (raw === null || raw === undefined) {
+    return "";
+  }
+  const trimmed = raw.trim();
+  if (trimmed === "") {
+    return "";
+  }
+  const withoutLeading = trimmed.replace(/^\/+/, "");
+  const withoutTrailing = withoutLeading.replace(/\/+$/, "");
+  if (withoutTrailing === "") {
+    return "";
+  }
+  return `/${withoutTrailing}`;
+};
+
 export function ExampleSection({ t }: ExampleSectionProps): React.JSX.Element {
-  const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
+  const basePath = normalizeBasePath(process.env.NEXT_PUBLIC_BASE_PATH);
 
   return (
     <section className="rounded-xl border border-border bg-surface p-4 md:p-6">
