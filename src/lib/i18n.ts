@@ -6,6 +6,10 @@ type Locale = z.infer<typeof LocaleSchema>;
 interface Translations {
   siteTitle: string;
   siteDescription: string;
+  exampleTitle: string;
+  exampleDescription: string;
+  exampleBefore: string;
+  exampleAfter: string;
   uploadTitle: string;
   uploadDescription: string;
   uploadButton: string;
@@ -26,6 +30,10 @@ const translations: Record<Locale, Translations> = {
   en: {
     siteTitle: "VRChat Photos Fovfix Tool",
     siteDescription: "Fix FOV distortion in VRChat photos",
+    exampleTitle: "Example",
+    exampleDescription: "This tool corrects the barrel distortion in VRChat photos caused by wide FOV settings. The left image shows the original photo, and the right shows the corrected result.",
+    exampleBefore: "Before",
+    exampleAfter: "After",
     uploadTitle: "Upload Photos",
     uploadDescription: "Drag & drop or click to select VRChat photos",
     uploadButton: "Select Photos",
@@ -45,6 +53,10 @@ const translations: Record<Locale, Translations> = {
   ja: {
     siteTitle: "VRChat写真歪み修正ツール",
     siteDescription: "VRChat写真のFOV歪みを修正します",
+    exampleTitle: "サンプル",
+    exampleDescription: "このツールは、広角FOVによって生じるVRChat写真の樽型歪みを補正します。左の画像が変換前、右の画像が変換後の結果です。",
+    exampleBefore: "変換前",
+    exampleAfter: "変換後",
     uploadTitle: "写真をアップロード",
     uploadDescription: "ドラッグ＆ドロップまたはクリックしてVRChat写真を選択",
     uploadButton: "写真を選択",
