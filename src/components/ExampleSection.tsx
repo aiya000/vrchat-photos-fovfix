@@ -15,21 +15,25 @@ export function ExampleSection({ t }: ExampleSectionProps): React.JSX.Element {
       <div className="grid grid-cols-2 gap-2 md:gap-4">
         <div className="space-y-1">
           <p className="text-xs text-muted text-center font-medium">{t.exampleBefore}</p>
-          <img
-            src="https://github.com/user-attachments/assets/6183ee22-b4f8-405b-b0e2-e90bb1a900e3"
-            alt={t.exampleBefore}
-            className="w-full rounded-lg border border-border"
-            loading="lazy"
-          />
+          <div className="aspect-[3/4]">
+            <img
+              src="https://github.com/user-attachments/assets/6183ee22-b4f8-405b-b0e2-e90bb1a900e3"
+              alt={t.exampleBeforeAlt}
+              className="w-full h-full object-cover rounded-lg border border-border"
+              loading="lazy"
+            />
+          </div>
         </div>
         <div className="space-y-1">
           <p className="text-xs text-muted text-center font-medium">{t.exampleAfter}</p>
-          <img
-            src="https://github.com/user-attachments/assets/f9307954-b55a-418d-8692-e9d2c583e07d"
-            alt={t.exampleAfter}
-            className="w-full rounded-lg border border-border"
-            loading="lazy"
-          />
+          <div className="aspect-[3/4]">
+            <img
+              src="https://github.com/user-attachments/assets/f9307954-b55a-418d-8692-e9d2c583e07d"
+              alt={t.exampleAfterAlt}
+              className="w-full h-full object-cover rounded-lg border border-border"
+              loading="lazy"
+            />
+          </div>
         </div>
       </div>
     </section>
