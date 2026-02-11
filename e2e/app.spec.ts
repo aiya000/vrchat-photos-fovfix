@@ -86,11 +86,9 @@ test.describe('VRChat Photos FOV Fix - 正常系E2Eテスト', () => {
     // 同じ画像を2回アップロード（実際には異なる画像として扱われる）
     await fileInputLocator.setInputFiles([testImagePath, testImagePath])
     
-    // 複数の画像がアップロードされたことを確認
-    await page.waitForTimeout(1000) // 画像の読み込みを待つ
+    // 複数の画像がアップロードされたことを確認（アップロード完了まで待機）
     const uploadedImages = page.locator('img[src*="blob:"]')
-    const count = await uploadedImages.count()
-    expect(count).toBeGreaterThanOrEqual(2)
+    await expect(uploadedImages).toHaveCount(2, { timeout: 10000 })
     
     // 修正ボタンをクリック
     const fixButton = page.getByRole('button', { name: /修正|Fix/i })
@@ -138,13 +136,9 @@ test.describe('VRChat Photos FOV Fix - 正常系E2Eテスト', () => {
     const fixButton = page.getByRole('button', { name: /修正|Fix/i })
     await fixButton.click()
     
-    // エラーが発生するか、または処理が進まないことを確認
-    // Note: 実装によっては、HTML5バリデーションでブロックされる可能性がある
-    await page.waitForTimeout(2000)
-    
-    // ダウンロードボタンが表示されないことを確認（エラーの場合）
+    // ダウンロードボタンが表示されないことを確認（無効なFOV値で処理が進まない）
     const downloadButton = page.getByRole('button', { name: /ダウンロード|Download/i })
-    // ここでは、処理が完了しないか、エラーが表示されることを想定
+    await expect(downloadButton).not.toBeVisible({ timeout: 5000 })
   })
 
   test('FOV補正値を何度か変えて、修正を再実行する', async ({ page }) => {
