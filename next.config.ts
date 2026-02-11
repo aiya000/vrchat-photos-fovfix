@@ -5,7 +5,7 @@ const basePath = normalizeBasePath(process.env.NEXT_PUBLIC_BASE_PATH);
 
 const nextConfig: NextConfig = {
   output: "export",
-  ...(basePath !== "" ? { basePath } : {}),
+  ...(basePath ? { basePath } : {}),
   images: {
     unoptimized: true,
   },

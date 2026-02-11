@@ -4,6 +4,14 @@
  *
  * @param raw - The raw basePath value from environment or config
  * @returns Normalized basePath or empty string
+ *
+ * @example
+ * normalizeBasePath('vrchat-photos-fovfix')  // → '/vrchat-photos-fovfix'
+ * normalizeBasePath('/vrchat-photos-fovfix') // → '/vrchat-photos-fovfix'
+ * normalizeBasePath('/path/')                // → '/path'
+ * normalizeBasePath('///path///')            // → '/path'
+ * normalizeBasePath('')                      // → ''
+ * normalizeBasePath(undefined)               // → ''
  */
 export const normalizeBasePath = (raw: string | undefined): string => {
   if (raw === undefined) {
