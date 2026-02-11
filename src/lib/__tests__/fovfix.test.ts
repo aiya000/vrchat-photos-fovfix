@@ -86,7 +86,7 @@ describe('applyFovFix', () => {
   it('should apply distortion correction for FOV 60', () => {
     const result = applyFovFix(sourceCanvas, 60)
     expect(result).toBeInstanceOf(HTMLCanvasElement)
-    
+
     const ctx = result.getContext('2d')
     expect(ctx).not.toBeNull()
     if (ctx !== null) {
@@ -98,7 +98,7 @@ describe('applyFovFix', () => {
   it('should apply distortion correction for FOV 50', () => {
     const result = applyFovFix(sourceCanvas, 50)
     expect(result).toBeInstanceOf(HTMLCanvasElement)
-    
+
     const ctx = result.getContext('2d')
     expect(ctx).not.toBeNull()
   })

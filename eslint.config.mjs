@@ -8,7 +8,20 @@ import prettierConfig from "eslint-config-prettier";
 const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTs,
-  globalIgnores([".next/**", "out/**", "build/**", "next-env.d.ts"]),
+  globalIgnores([
+    ".next/**",
+    "out/**",
+    "build/**",
+    "next-env.d.ts",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "**/*.spec.ts",
+    "**/*.spec.tsx",
+    "e2e/**",
+    "vitest.config.ts",
+    "vitest.setup.ts",
+    "playwright.config.ts",
+  ]),
   {
     files: ["**/*.ts", "**/*.tsx"],
     plugins: {
