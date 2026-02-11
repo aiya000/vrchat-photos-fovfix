@@ -13,17 +13,9 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
-    "**/*.test.ts",
-    "**/*.test.tsx",
-    "**/*.spec.ts",
-    "**/*.spec.tsx",
-    "e2e/**",
-    "vitest.config.ts",
-    "vitest.setup.ts",
-    "playwright.config.ts",
   ]),
   {
-    files: ["**/*.ts", "**/*.tsx"],
+    files: ["**/*.ts", "**/*.tsx", "**/*.mjs"],
     plugins: {
       "@typescript-eslint": tseslint,
     },

@@ -2,13 +2,13 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 import { applyFovFix, imageToCanvas, canvasToBlob, FovSchema } from '../fovfix'
 
 describe('FovSchema', () => {
-  it('should accept valid FOV values', () => {
+  it('有効なFOV値を受け入れる', () => {
     expect(FovSchema.safeParse(1).success).toBe(true)
     expect(FovSchema.safeParse(50).success).toBe(true)
     expect(FovSchema.safeParse(179).success).toBe(true)
   })
 
-  it('should reject invalid FOV values', () => {
+  it('無効なFOV値を拒否する', () => {
     expect(FovSchema.safeParse(0).success).toBe(false)
     expect(FovSchema.safeParse(180).success).toBe(false)
     expect(FovSchema.safeParse(-10).success).toBe(false)
@@ -26,7 +26,7 @@ describe('imageToCanvas', () => {
     Object.defineProperty(img, 'naturalHeight', { value: 100, writable: false })
   })
 
-  it('should create a canvas from an image', () => {
+  it('画像からCanvasを作成する', () => {
     const canvas = imageToCanvas(img)
     expect(canvas).toBeInstanceOf(HTMLCanvasElement)
     expect(canvas.width).toBe(100)
@@ -35,7 +35,7 @@ describe('imageToCanvas', () => {
 })
 
 describe('canvasToBlob', () => {
-  it('should convert canvas to blob', async () => {
+  it('CanvasをBlobに変換する', async () => {
     const canvas = document.createElement('canvas')
     canvas.width = 10
     canvas.height = 10
@@ -69,7 +69,7 @@ describe('applyFovFix', () => {
     sourceCanvas.remove()
   })
 
-  it('should create a new canvas with same dimensions', () => {
+  it('同じサイズの新しいCanvasを作成する', () => {
     const result = applyFovFix(sourceCanvas, 50)
     expect(result).toBeInstanceOf(HTMLCanvasElement)
     expect(result.width).toBe(100)
@@ -77,13 +77,13 @@ describe('applyFovFix', () => {
     expect(result).not.toBe(sourceCanvas)
   })
 
-  it('should throw error for invalid FOV', () => {
+  it('無効なFOV値でエラーを投げる', () => {
     expect(() => applyFovFix(sourceCanvas, 0)).toThrow('Invalid FOV value')
     expect(() => applyFovFix(sourceCanvas, 180)).toThrow('Invalid FOV value')
     expect(() => applyFovFix(sourceCanvas, -5)).toThrow('Invalid FOV value')
   })
 
-  it('should apply distortion correction for FOV 60', () => {
+  it('FOV 60で歪み補正を適用する', () => {
     const result = applyFovFix(sourceCanvas, 60)
     expect(result).toBeInstanceOf(HTMLCanvasElement)
 
@@ -95,7 +95,7 @@ describe('applyFovFix', () => {
     }
   })
 
-  it('should apply distortion correction for FOV 50', () => {
+  it('FOV 50で歪み補正を適用する', () => {
     const result = applyFovFix(sourceCanvas, 50)
     expect(result).toBeInstanceOf(HTMLCanvasElement)
 
@@ -103,8 +103,9 @@ describe('applyFovFix', () => {
     expect(ctx).not.toBeNull()
   })
 
-  it('should handle edge FOV values', () => {
+  it('エッジケースのFOV値を処理する', () => {
     expect(() => applyFovFix(sourceCanvas, 1)).not.toThrow()
     expect(() => applyFovFix(sourceCanvas, 179)).not.toThrow()
   })
 })
+
