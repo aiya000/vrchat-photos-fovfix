@@ -68,19 +68,19 @@ bun run fix
 ### ユニットテスト
 
 ```bash
-npm run test
+bun run test:ut
 ```
 
 ### E2Eテスト
 
 ```bash
-npm run test:e2e
+bun run test:e2e
 ```
 
 ### すべてのテスト
 
 ```bash
-npm run test:all
+bun run test
 ```
 
 ## プロジェクト構造

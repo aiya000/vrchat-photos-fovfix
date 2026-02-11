@@ -13,12 +13,12 @@
     "fix": "bun fix:eslint && bun fix:prettier",
     "fix:eslint": "eslint --fix .",
     "fix:prettier": "prettier --write 'src/**/*.{ts,tsx}'",
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "test:ui": "vitest --ui",
+    "test": "vitest run && playwright test",
+    "test:ut": "vitest run",
+    "test:ut:watch": "vitest",
+    "test:ut:ui": "vitest --ui",
     "test:e2e": "playwright test",
-    "test:e2e:ui": "playwright test --ui",
-    "test:all": "vitest run && playwright test"
+    "test:e2e:ui": "playwright test --ui"
   },
   "dependencies": {
     "jszip": "^3.10.1",

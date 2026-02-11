@@ -113,13 +113,13 @@ const FovSchema = z.number().int().min(1).max(179)
 
 ```bash
 # ユニットテスト
-npm run test
+bun run test:ut
 
 # E2Eテスト
-npm run test:e2e
+bun run test:e2e
 
 # すべてのテスト
-npm run test:all
+bun run test
 ```
 
 ## CI/CD
