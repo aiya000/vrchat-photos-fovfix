@@ -15,7 +15,7 @@ export function ExampleSection({ t }: ExampleSectionProps): React.JSX.Element {
       <div className="grid grid-cols-2 gap-2 md:gap-4">
         <div className="space-y-1">
           <p className="text-xs text-muted text-center font-medium">{t.exampleBefore}</p>
-          <div className="aspect-[3/4]">
+          <div className="aspect-[9/16]">
             <img
               src="/examples/before.png"
               alt={t.exampleBeforeAlt}
@@ -26,7 +26,7 @@ export function ExampleSection({ t }: ExampleSectionProps): React.JSX.Element {
         </div>
         <div className="space-y-1">
           <p className="text-xs text-muted text-center font-medium">{t.exampleAfter}</p>
-          <div className="aspect-[3/4]">
+          <div className="aspect-[9/16]">
             <img
               src="/examples/after.png"
               alt={t.exampleAfterAlt}
