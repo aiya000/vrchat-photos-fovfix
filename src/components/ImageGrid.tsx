@@ -1,33 +1,26 @@
-"use client";
+'use client'
 
-import type { UploadedImage } from "@/lib/types";
+import type { UploadedImage } from '@/lib/types'
 
 interface ImageGridProps {
-  images: UploadedImage[];
-  onRemove: (id: string) => void;
+  images: UploadedImage[]
+  onRemove: (id: string) => void
 }
 
 export function ImageGrid({ images, onRemove }: ImageGridProps): React.JSX.Element {
   if (images.length === 0) {
-    return <></>;
+    return <></>
   }
 
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
       {images.map((img) => (
-        <div
-          key={img.id}
-          className="relative group rounded-lg overflow-hidden bg-surface border border-border"
-        >
-          <img
-            src={img.previewUrl}
-            alt={img.file.name}
-            className="w-full aspect-square object-cover"
-          />
+        <div key={img.id} className="relative group rounded-lg overflow-hidden bg-surface border border-border">
+          <img src={img.previewUrl} alt={img.file.name} className="w-full aspect-square object-cover" />
           <button
             type="button"
             onClick={() => {
-              onRemove(img.id);
+              onRemove(img.id)
             }}
             className="absolute top-1 right-1 w-6 h-6 rounded-full bg-red-500 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity text-xs"
           >
@@ -39,5 +32,5 @@ export function ImageGrid({ images, onRemove }: ImageGridProps): React.JSX.Eleme
         </div>
       ))}
     </div>
-  );
+  )
 }
