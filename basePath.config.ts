@@ -13,10 +13,9 @@ export const normalizeBasePath = (raw: string | undefined): string => {
   if (trimmed === "") {
     return "";
   }
-  const withoutLeading = trimmed.replace(/^\/+/, "");
-  const withoutTrailing = withoutLeading.replace(/\/+$/, "");
-  if (withoutTrailing === "") {
+  const withoutSlashes = trimmed.replace(/^\/+|\/+$/g, "");
+  if (withoutSlashes === "") {
     return "";
   }
-  return `/${withoutTrailing}`;
+  return `/${withoutSlashes}`;
 };
