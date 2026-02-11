@@ -32,6 +32,8 @@ jobs:
 
       - name: Build
         run: bun run build
+        env:
+          NEXT_PUBLIC_BASE_PATH: /vrchat-photos-fovfix
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
