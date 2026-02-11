@@ -1,16 +1,16 @@
-"use client";
+'use client'
 
-import type { ProcessedImage } from "@/lib/types";
-import type { Translations } from "@/lib/i18n";
+import type { ProcessedImage } from '@/lib/types'
+import type { Translations } from '@/lib/i18n'
 
 interface ComparisonViewProps {
-  images: ProcessedImage[];
-  t: Translations;
+  images: ProcessedImage[]
+  t: Translations
 }
 
 export function ComparisonView({ images, t }: ComparisonViewProps): React.JSX.Element {
   if (images.length === 0) {
-    return <></>;
+    return <></>
   }
 
   return (
@@ -39,5 +39,5 @@ export function ComparisonView({ images, t }: ComparisonViewProps): React.JSX.El
         </div>
       ))}
     </div>
-  );
+  )
 }
