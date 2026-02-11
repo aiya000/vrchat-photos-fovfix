@@ -1,20 +1,5 @@
 import type { NextConfig } from "next";
-
-const normalizeBasePath = (raw: string | undefined): string => {
-  if (raw === undefined) {
-    return "";
-  }
-  const trimmed = raw.trim();
-  if (trimmed === "") {
-    return "";
-  }
-  const withoutLeading = trimmed.replace(/^\/+/, "");
-  const withoutTrailing = withoutLeading.replace(/\/+$/, "");
-  if (withoutTrailing === "") {
-    return "";
-  }
-  return `/${withoutTrailing}`;
-};
+import { normalizeBasePath } from "./basePath.config";
 
 const basePath = normalizeBasePath(process.env.NEXT_PUBLIC_BASE_PATH);
 

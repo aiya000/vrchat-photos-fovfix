@@ -1,26 +1,11 @@
 "use client";
 
 import type { Translations } from "@/lib/i18n";
+import { normalizeBasePath } from "../../basePath.config";
 
 interface ExampleSectionProps {
   t: Translations;
 }
-
-const normalizeBasePath = (raw: string | undefined): string => {
-  if (raw === undefined) {
-    return "";
-  }
-  const trimmed = raw.trim();
-  if (trimmed === "") {
-    return "";
-  }
-  const withoutLeading = trimmed.replace(/^\/+/, "");
-  const withoutTrailing = withoutLeading.replace(/\/+$/, "");
-  if (withoutTrailing === "") {
-    return "";
-  }
-  return `/${withoutTrailing}`;
-};
 
 export function ExampleSection({ t }: ExampleSectionProps): React.JSX.Element {
   const basePath = normalizeBasePath(process.env.NEXT_PUBLIC_BASE_PATH);
