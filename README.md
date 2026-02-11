@@ -6,7 +6,7 @@ VRChatで撮影した写真のFOV（視野角）歪みを、ブラウザ上で�
 
 ## 補正例
 
-![修正前後の比較](https://github.com/user-attachments/assets/ea2978b8-357f-4d12-8c71-6db82919c5b1)
+![修正前後の比較](https://github.com/user-attachments/assets/24123066-2d83-46c2-aa6e-94bbf3d1a70a)
 
 ## 🎯 このツールについて
 
