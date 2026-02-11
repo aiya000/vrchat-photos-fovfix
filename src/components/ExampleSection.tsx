@@ -27,7 +27,6 @@ export function ExampleSection({ t }: ExampleSectionProps): React.JSX.Element {
               loading="lazy"
               width={1080}
               height={1920}
-              unoptimized
             />
           </div>
         </div>
@@ -41,7 +40,6 @@ export function ExampleSection({ t }: ExampleSectionProps): React.JSX.Element {
               loading="lazy"
               width={1080}
               height={1920}
-              unoptimized
             />
           </div>
         </div>

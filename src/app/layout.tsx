@@ -5,7 +5,7 @@ const DEFAULT_SITE_URL = 'https://aiya000.github.io/vrchat-photos-fovfix'
 
 const rawEnvSiteUrl = process.env.NEXT_PUBLIC_SITE_URL
 
-const siteUrl = (() => {
+const siteUrl = ((): string => {
   if (rawEnvSiteUrl === undefined) {
     return DEFAULT_SITE_URL
   }
@@ -16,9 +16,6 @@ const siteUrl = (() => {
   }
 
   try {
-    // Validate that the URL is well-formed and absolute.
-    // If this throws, fall back to the default URL.
-    // eslint-disable-next-line no-new
     new URL(trimmed)
     return trimmed
   } catch {

@@ -10,8 +10,6 @@ export default function robots(): MetadataRoute.Robots {
     const trimmed = envSiteUrl.trim()
     if (trimmed !== '') {
       try {
-        // Validate as URL; if invalid, fall back to default
-        // eslint-disable-next-line no-new
         new URL(trimmed)
         siteUrl = trimmed
       } catch {

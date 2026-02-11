@@ -28,7 +28,6 @@ export function ComparisonView({ images, t }: ComparisonViewProps): React.JSX.El
                 className="w-full rounded-lg border border-border"
                 width={800}
                 height={600}
-                unoptimized
               />
             </div>
             <div>
@@ -39,7 +38,6 @@ export function ComparisonView({ images, t }: ComparisonViewProps): React.JSX.El
                 className="w-full rounded-lg border border-border"
                 width={800}
                 height={600}
-                unoptimized
               />
             </div>
           </div>
