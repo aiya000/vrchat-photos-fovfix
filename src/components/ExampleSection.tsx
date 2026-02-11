@@ -7,7 +7,7 @@ interface ExampleSectionProps {
 }
 
 const normalizeBasePath = (raw: string | undefined): string => {
-  if (raw === null || raw === undefined) {
+  if (raw === undefined) {
     return "";
   }
   const trimmed = raw.trim();
