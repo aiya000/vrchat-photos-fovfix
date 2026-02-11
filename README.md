@@ -75,3 +75,5 @@ k4 = k
 ---
 
 VRChatでの素敵な思い出を、さらに美しく残しましょう！ 📸✨
+
+<sub>💡 CLIツール版もあります: [vrcss-fovfix](https://github.com/aiya000/vrcss-fovfix)</sub>

@@ -18,6 +18,7 @@ interface Translations {
   originalLabel: string;
   fixedLabel: string;
   clearButton: string;
+  cliVersionLink: string;
   imageCount: (n: number) => string;
   processingProgress: (current: number, total: number) => string;
 }
@@ -38,6 +39,7 @@ const translations: Record<Locale, Translations> = {
     originalLabel: "Original",
     fixedLabel: "Fixed",
     clearButton: "Clear All",
+    cliVersionLink: "CLI version available",
     imageCount: (n: number): string => `${String(n)} image${n !== 1 ? "s" : ""}`,
     processingProgress: (current: number, total: number): string =>
       `Processing ${String(current)} / ${String(total)}...`,
@@ -57,6 +59,7 @@ const translations: Record<Locale, Translations> = {
     originalLabel: "オリジナル",
     fixedLabel: "修正済み",
     clearButton: "すべてクリア",
+    cliVersionLink: "CLIツール版もあります",
     imageCount: (n: number): string => `${String(n)}枚`,
     processingProgress: (current: number, total: number): string =>
       `処理中 ${String(current)} / ${String(total)}...`,
