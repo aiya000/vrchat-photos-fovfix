@@ -4,6 +4,7 @@ import { useState, useCallback } from "react";
 import { useI18n } from "@/lib/useI18n";
 import { applyFovFix, imageToCanvas } from "@/lib/fovfix";
 import type { UploadedImage, ProcessedImage, AppPhase } from "@/lib/types";
+import { ExampleSection } from "@/components/ExampleSection";
 import { UploadArea } from "@/components/UploadArea";
 import { ImageGrid } from "@/components/ImageGrid";
 import { ComparisonView } from "@/components/ComparisonView";
@@ -157,6 +158,8 @@ export default function Home(): React.JSX.Element {
           <h1 className="text-3xl font-bold">{t.siteTitle}</h1>
           <p className="text-muted mt-1">{t.siteDescription}</p>
         </header>
+
+        <ExampleSection t={t} />
 
         <UploadArea
           t={t}
