@@ -2,7 +2,7 @@
 
 VRChatで撮影した写真のFOV（視野角）歪みを、ブラウザ上で簡単に修正できるWebツールです！
 
-**🌐 サイトへアクセス: [https://aiya000.github.io/vrchat-photos-fovfix/](https://aiya000.github.io/vrchat-photos-fovfix/)**
+**🌐 サイトへのアクセス: [https://aiya000.github.io/vrchat-photos-fovfix/](https://aiya000.github.io/vrchat-photos-fovfix/)**
 
 ## 補正例
 
@@ -28,9 +28,8 @@ VRChatのカメラはデフォルトで60°のFOVを使用していますが、�
 
 ## 🚀 使い方
 
-### オンライン版（推奨）
-
 このツールはGitHub Pagesで公開されています。ブラウザでアクセスするだけですぐに使えます！
+スマホでも使うことができます ٩(•᎑•*)✦
 
 **👉 [https://aiya000.github.io/vrchat-photos-fovfix/](https://aiya000.github.io/vrchat-photos-fovfix/)**
 
@@ -39,35 +38,6 @@ VRChatのカメラはデフォルトで60°のFOVを使用していますが、�
 3. 必要に応じてFOV値を調整（デフォルト: 50°）
 4. 「修正」ボタンをクリック
 5. 修正結果を確認して、「ダウンロード」ボタンで保存
-
-## 🔧 技術スタック
-
-- **Next.js 16** - React フレームワーク（静的サイト生成）
-- **TypeScript** - 型安全な開発
-- **Tailwind CSS** - モダンなスタイリング
-- **Bun** - 高速なパッケージマネージャー
-- **JSZip** - 複数画像のZIP圧縮
-
-## 📐 FOV補正アルゴリズム
-
-このツールは、ImageMagickのbarrel distortion補正式を元にしています：
-
-```
-k = targetFov / 60
-k2 = (k - k³) / 6
-k4 = k
-
-各出力ピクセルについて:
-  source_r = k2 * r³ + k4 * r
-```
-
-バイリニア補間により、滑らかで高品質な出力を実現しています。
-
-参考: [autch/gist](https://gist.github.com/autch/6c30693255e1d3e070a7d11c62eb0e73), [chigirits/gist](https://gist.github.com/chigirits/55d6eed4396ed5da64878af2b43111ed)
-
-## 📝 ライセンス
-
-このプロジェクトは[MITライセンス](LICENSE)の下で公開されています。
 
 ## 🤝 コントリビューション
 
