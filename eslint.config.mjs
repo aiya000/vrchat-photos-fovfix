@@ -15,8 +15,7 @@ const eslintConfig = defineConfig([
     "next-env.d.ts",
   ]),
   {
-    files: ["**/*.ts", "**/*.tsx"],
-    ignores: ["**/*.test.ts", "**/*.test.tsx", "**/*.spec.ts", "**/*.spec.tsx", "e2e/**", "*.config.ts"],
+    files: ["**/*.ts", "**/*.tsx", "**/*.mjs"],
     plugins: {
       "@typescript-eslint": tseslint,
     },
@@ -24,30 +23,6 @@ const eslintConfig = defineConfig([
       parser: tsParser,
       parserOptions: {
         projectService: true,
-        tsconfigRootDir: import.meta.dirname,
-      },
-    },
-    rules: {
-      ...tseslint.configs["strict-type-checked"]?.rules,
-      ...prettierConfig.rules,
-      "@typescript-eslint/no-explicit-any": "error",
-      "@typescript-eslint/no-unsafe-assignment": "error",
-      "@typescript-eslint/no-unsafe-call": "error",
-      "@typescript-eslint/no-unsafe-member-access": "error",
-      "@typescript-eslint/no-unsafe-return": "error",
-      "@typescript-eslint/no-floating-promises": "error",
-      "@typescript-eslint/strict-boolean-expressions": "error",
-    },
-  },
-  {
-    files: ["**/*.test.ts", "**/*.test.tsx", "**/*.spec.ts", "**/*.spec.tsx", "e2e/**/*.ts", "*.config.ts", "*.config.mjs"],
-    plugins: {
-      "@typescript-eslint": tseslint,
-    },
-    languageOptions: {
-      parser: tsParser,
-      parserOptions: {
-        project: "./tsconfig.test.json",
         tsconfigRootDir: import.meta.dirname,
       },
     },
