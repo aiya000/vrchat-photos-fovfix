@@ -1,4 +1,4 @@
-name: CI
+name: Typecheck
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
   pull_request:
 
 jobs:
-  lint-and-typecheck:
+  typecheck:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -33,6 +33,3 @@ jobs:
 
       - name: Run typecheck
         run: bun run typecheck
-
-      - name: Run lint
-        run: bun run lint

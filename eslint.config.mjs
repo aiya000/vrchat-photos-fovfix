@@ -8,9 +8,14 @@ import prettierConfig from "eslint-config-prettier";
 const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTs,
-  globalIgnores([".next/**", "out/**", "build/**", "next-env.d.ts"]),
+  globalIgnores([
+    ".next/**",
+    "out/**",
+    "build/**",
+    "next-env.d.ts",
+  ]),
   {
-    files: ["**/*.ts", "**/*.tsx"],
+    files: ["**/*.ts", "**/*.tsx", "**/*.mjs"],
     plugins: {
       "@typescript-eslint": tseslint,
     },
