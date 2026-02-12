@@ -2,7 +2,7 @@
 
 import { useState, useCallback } from 'react'
 import { useI18n } from '@/lib/useI18n'
-import { applyFovFix, imageToCanvas } from '@/lib/fovfix'
+import { applyFovFix, imageToCanvas, fovSchema } from '@/lib/fovfix'
 import type { UploadedImage, ProcessedImage, AppPhase } from '@/lib/types'
 import { ExampleSection } from '@/components/ExampleSection'
 import { UploadArea } from '@/components/UploadArea'
@@ -19,6 +19,7 @@ export default function Home(): React.JSX.Element {
   const [uploadedImages, setUploadedImages] = useState<UploadedImage[]>([])
   const [processedImages, setProcessedImages] = useState<ProcessedImage[]>([])
   const [fov, setFov] = useState(50)
+  const [fovError, setFovError] = useState<string | null>(null)
   const [phase, setPhase] = useState<AppPhase>('upload')
   const [progress, setProgress] = useState({ current: 0, total: 0 })
   const [isDownloading, setIsDownloading] = useState(false)
@@ -59,6 +60,13 @@ export default function Home(): React.JSX.Element {
 
   const handleFix = useCallback(async () => {
     if (uploadedImages.length === 0) return
+
+    const validation = fovSchema.safeParse(fov)
+    if (!validation.success) {
+      setFovError(t.fovError)
+      return
+    }
+    setFovError(null)
 
     setPhase('processing')
     setProgress({ current: 0, total: uploadedImages.length })
@@ -107,7 +115,7 @@ export default function Home(): React.JSX.Element {
 
     setProcessedImages(results)
     setPhase('result')
-  }, [uploadedImages, fov])
+  }, [uploadedImages, fov, t.fovError])
 
   const handleDownload = useCallback(async () => {
     if (processedImages.length === 0) return
@@ -162,45 +170,58 @@ export default function Home(): React.JSX.Element {
         <ImageGrid images={uploadedImages} onRemove={handleRemoveImage} />
 
         {uploadedImages.length > 0 && (
-          <div className="flex flex-wrap items-center gap-4 rounded-xl border border-border bg-surface p-4">
-            <div className="flex items-center gap-2">
-              <label htmlFor="fov-input" className="text-sm font-medium whitespace-nowrap">
-                {t.fovLabel}
-              </label>
-              <input
-                id="fov-input"
-                type="number"
-                min={1}
-                max={179}
-                value={fov}
-                onChange={(e) => {
-                  const v = parseInt(e.target.value, 10)
-                  if (!isNaN(v)) {
-                    setFov(v)
-                  }
-                }}
-                className="w-20 px-2 py-1 rounded-md border border-border bg-background text-foreground text-center"
-              />
-              <span className="text-sm text-muted">°</span>
+          <div className="flex flex-col gap-2">
+            <div className="flex flex-wrap items-center gap-4 rounded-xl border border-border bg-surface p-4">
+              <div className="flex items-center gap-2">
+                <label htmlFor="fov-input" className="text-sm font-medium whitespace-nowrap">
+                  {t.fovLabel}
+                </label>
+                <input
+                  id="fov-input"
+                  type="number"
+                  min={1}
+                  max={179}
+                  value={fov}
+                  onChange={(e) => {
+                    const v = parseInt(e.target.value, 10)
+                    if (!isNaN(v)) {
+                      setFov(v)
+                      const validation = fovSchema.safeParse(v)
+                      if (validation.success) {
+                        setFovError(null)
+                      } else {
+                        setFovError(t.fovError)
+                      }
+                    }
+                  }}
+                  className="w-20 px-2 py-1 rounded-md border border-border bg-background text-foreground text-center"
+                />
+                <span className="text-sm text-muted">°</span>
+              </div>
+              <p className="text-xs text-muted flex-1">{t.fovDescription}</p>
+              <div className="flex gap-2 ml-auto">
+                <button
+                  type="button"
+                  onClick={handleClear}
+                  className="px-4 py-2 rounded-lg border border-border text-sm font-medium hover:bg-border/30 transition-colors"
+                >
+                  {t.clearButton}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => void handleFix()}
+                  disabled={phase === 'processing'}
+                  className="px-6 py-2 rounded-lg bg-primary text-white font-medium hover:bg-primary-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {phase === 'processing' ? t.fixingButton : t.fixButton}
+                </button>
+              </div>
             </div>
-            <p className="text-xs text-muted flex-1">{t.fovDescription}</p>
-            <div className="flex gap-2 ml-auto">
-              <button
-                type="button"
-                onClick={handleClear}
-                className="px-4 py-2 rounded-lg border border-border text-sm font-medium hover:bg-border/30 transition-colors"
-              >
-                {t.clearButton}
-              </button>
-              <button
-                type="button"
-                onClick={() => void handleFix()}
-                disabled={phase === 'processing'}
-                className="px-6 py-2 rounded-lg bg-primary text-white font-medium hover:bg-primary-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {phase === 'processing' ? t.fixingButton : t.fixButton}
-              </button>
-            </div>
+            {fovError !== null && (
+              <div className="px-4 py-3 rounded-lg bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-800 text-red-800 dark:text-red-200 text-sm">
+                {fovError}
+              </div>
+            )}
           </div>
         )}
 

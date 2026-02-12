@@ -17,6 +17,7 @@ export interface Translations {
   uploadButton: string
   fovLabel: string
   fovDescription: string
+  fovError: string
   fixButton: string
   fixingButton: string
   downloadButton: string
@@ -44,6 +45,7 @@ const translations: Record<Locale, Translations> = {
     uploadButton: 'Select Photos',
     fovLabel: 'Target FOV',
     fovDescription: 'VRChat default is 60°. Recommended correction target: 50°',
+    fovError: 'FOV must be between 1 and 179',
     fixButton: 'Fix',
     fixingButton: 'Fixing...',
     downloadButton: 'Download',
@@ -70,6 +72,7 @@ const translations: Record<Locale, Translations> = {
     uploadButton: '写真を選択',
     fovLabel: '補正先FOV',
     fovDescription: 'VRChatのデフォルトは60°。推奨補正先: 50°',
+    fovError: 'FOV値は1〜179の範囲で入力してください',
     fixButton: '修正',
     fixingButton: '修正中...',
     downloadButton: 'ダウンロード',
