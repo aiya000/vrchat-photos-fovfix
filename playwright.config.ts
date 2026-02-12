@@ -18,7 +18,7 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: 'bun run build && bunx serve@latest out -l 3000',
+    command: 'bun run build && node scripts/serve-static.js',
     url: 'http://localhost:3000',
     reuseExistingServer: process.env.CI === undefined || process.env.CI === '',
     timeout: 120 * 1000,
