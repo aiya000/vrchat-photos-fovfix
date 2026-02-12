@@ -3,9 +3,9 @@ import { defineConfig, devices } from '@playwright/test'
 export default defineConfig({
   testDir: './test/e2e',
   fullyParallel: true,
-  forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 1 : 1,
+  forbidOnly: process.env.CI !== undefined && process.env.CI !== '',
+  retries: process.env.CI !== undefined && process.env.CI !== '' ? 2 : 0,
+  workers: process.env.CI !== undefined && process.env.CI !== '' ? 1 : 1,
   reporter: 'html',
   use: {
     baseURL: 'http://localhost:3000',
@@ -20,7 +20,7 @@ export default defineConfig({
   webServer: {
     command: 'bun run build && bunx serve@latest out -l 3000',
     url: 'http://localhost:3000',
-    reuseExistingServer: !process.env.CI,
+    reuseExistingServer: process.env.CI === undefined || process.env.CI === '',
     timeout: 120 * 1000,
   },
 })
