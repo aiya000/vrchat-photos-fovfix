@@ -32,7 +32,9 @@ const server = http.createServer((req, res) => {
   try {
     decodedPath = decodeURIComponent(pathOnly)
   } catch {
-    decodedPath = '/'
+    res.writeHead(400, { 'Content-Type': 'text/plain' })
+    res.end('400 Bad Request')
+    return
   }
 
   let normalizedPath = path.normalize(decodedPath)
@@ -47,7 +49,8 @@ const server = http.createServer((req, res) => {
   const resolvedPath = path.resolve(filePath)
   const resolvedOutDir = path.resolve(OUT_DIR)
 
-  if (!resolvedPath.startsWith(resolvedOutDir + path.sep) && resolvedPath !== resolvedOutDir) {
+  const relativePath = path.relative(resolvedOutDir, resolvedPath)
+  if (relativePath.startsWith('..') || path.isAbsolute(relativePath)) {
     res.writeHead(403, { 'Content-Type': 'text/plain' })
     res.end('403 Forbidden')
     return
