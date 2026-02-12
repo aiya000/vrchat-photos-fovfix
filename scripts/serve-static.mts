@@ -25,7 +25,35 @@ const MIME_TYPES: Record<string, string> = {
 }
 
 const server = http.createServer((req, res) => {
-  let filePath = path.join(OUT_DIR, req.url === '/' ? 'index.html' : req.url ?? '')
+  const rawUrl = req.url ?? '/'
+  const pathOnly = rawUrl.split(/[?#]/)[0] ?? '/'
+
+  let decodedPath: string
+  try {
+    decodedPath = decodeURIComponent(pathOnly)
+  } catch {
+    decodedPath = '/'
+  }
+
+  let normalizedPath = path.normalize(decodedPath)
+
+  if (normalizedPath === '/' || normalizedPath === '.') {
+    normalizedPath = 'index.html'
+  } else {
+    normalizedPath = normalizedPath.replace(/^[/\\]+/, '')
+  }
+
+  let filePath = path.join(OUT_DIR, normalizedPath)
+  const resolvedPath = path.resolve(filePath)
+  const resolvedOutDir = path.resolve(OUT_DIR)
+
+  if (!resolvedPath.startsWith(resolvedOutDir + path.sep) && resolvedPath !== resolvedOutDir) {
+    res.writeHead(403, { 'Content-Type': 'text/plain' })
+    res.end('403 Forbidden')
+    return
+  }
+
+  filePath = resolvedPath
 
   if (fs.existsSync(filePath) && fs.statSync(filePath).isDirectory()) {
     filePath = path.join(filePath, 'index.html')

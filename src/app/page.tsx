@@ -33,6 +33,7 @@ export default function Home(): React.JSX.Element {
     setUploadedImages((prev) => [...prev, ...newImages])
     setPhase('upload')
     setProcessedImages([])
+    setFovError(null)
   }, [])
 
   const handleRemoveImage = useCallback((id: string) => {
@@ -56,6 +57,7 @@ export default function Home(): React.JSX.Element {
     setUploadedImages([])
     setProcessedImages([])
     setPhase('upload')
+    setFovError(null)
   }, [uploadedImages, processedImages])
 
   const handleFix = useCallback(async () => {
