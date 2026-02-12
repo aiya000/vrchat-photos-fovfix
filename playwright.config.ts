@@ -18,7 +18,7 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: 'bun run build && bun scripts/serve-static.ts',
+    command: 'bun run build && bun scripts/serve-static.mts',
     url: 'http://localhost:3000',
     reuseExistingServer: process.env.CI === undefined || process.env.CI === '',
     timeout: 120 * 1000,
