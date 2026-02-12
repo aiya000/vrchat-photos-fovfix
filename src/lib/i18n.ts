@@ -1,9 +1,9 @@
 import { z } from 'zod/v4'
 
-const localeSchema = z.enum(['en', 'ja'])
-type Locale = z.infer<typeof localeSchema>
+export const localeSchema = z.enum(['en', 'ja'])
+export type Locale = z.infer<typeof localeSchema>
 
-interface Translations {
+export interface Translations {
   siteTitle: string
   siteDescription: string
   exampleTitle: string
@@ -96,6 +96,3 @@ export function detectLocale(): Locale {
 export function getTranslations(locale: Locale): Translations {
   return translations[locale]
 }
-
-export type { Locale, Translations }
-export { localeSchema }
