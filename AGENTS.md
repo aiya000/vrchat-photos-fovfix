@@ -113,6 +113,34 @@ const FovSchema = z.number().int().min(1).max(179)  // ❌ PascalCase
 const UserProfileSchema = z.object({ ... })  // ❌ PascalCase
 ```
 
+### Export Style
+Use `export` prefix on declarations instead of separate export statements:
+
+**Required:**
+```ts
+export const fovSchema = z.number().int().min(1).max(179)
+export type Locale = z.infer<typeof localeSchema>
+export interface Translations { ... }
+export function detectLocale(): Locale { ... }
+```
+
+**Not allowed:**
+```ts
+const fovSchema = z.number().int().min(1).max(179)
+type Locale = z.infer<typeof localeSchema>
+interface Translations { ... }
+
+export { fovSchema }
+export type { Locale, Translations }
+```
+
+**Exception for `export default`:**
+`export default` cannot be used as a prefix for `const`, so it must be on a separate line:
+```ts
+const config = { ... }
+export default config
+```
+
 ### ESLint Rules
 **IMPORTANT: Do not disable ESLint rules without a very strong justification.**
 

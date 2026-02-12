@@ -1,6 +1,6 @@
 import { z } from 'zod/v4'
 
-export const FovSchema = z.number().int().min(1).max(179)
+export const fovSchema = z.number().int().min(1).max(179)
 
 /**
  * Apply barrel distortion correction to an image.
@@ -17,7 +17,7 @@ export const FovSchema = z.number().int().min(1).max(179)
  * where A=0, B=k2, C=0, D=k4.
  */
 export function applyFovFix(sourceCanvas: HTMLCanvasElement, targetFov: number): HTMLCanvasElement {
-  const parsed = FovSchema.safeParse(targetFov)
+  const parsed = fovSchema.safeParse(targetFov)
   if (!parsed.success) {
     throw new Error(`Invalid FOV value: ${String(targetFov)}`)
   }
