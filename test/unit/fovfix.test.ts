@@ -1,19 +1,19 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest'
-import { applyFovFix, imageToCanvas, canvasToBlob, FovSchema } from '@/lib/fovfix'
+import { applyFovFix, imageToCanvas, canvasToBlob, fovSchema } from '@/lib/fovfix'
 
-describe('FovSchema', () => {
+describe('fovSchema', () => {
   it('有効なFOV値を受け入れる', () => {
-    expect(FovSchema.safeParse(1).success).toBe(true)
-    expect(FovSchema.safeParse(50).success).toBe(true)
-    expect(FovSchema.safeParse(179).success).toBe(true)
+    expect(fovSchema.safeParse(1).success).toBe(true)
+    expect(fovSchema.safeParse(50).success).toBe(true)
+    expect(fovSchema.safeParse(179).success).toBe(true)
   })
 
   it('無効なFOV値を拒否する', () => {
-    expect(FovSchema.safeParse(0).success).toBe(false)
-    expect(FovSchema.safeParse(180).success).toBe(false)
-    expect(FovSchema.safeParse(-10).success).toBe(false)
-    expect(FovSchema.safeParse(200).success).toBe(false)
-    expect(FovSchema.safeParse(1.5).success).toBe(false)
+    expect(fovSchema.safeParse(0).success).toBe(false)
+    expect(fovSchema.safeParse(180).success).toBe(false)
+    expect(fovSchema.safeParse(-10).success).toBe(false)
+    expect(fovSchema.safeParse(200).success).toBe(false)
+    expect(fovSchema.safeParse(1.5).success).toBe(false)
   })
 })
 
