@@ -104,8 +104,8 @@ const FovSchema = z.number().int().min(1).max(179)
 
 ### テストの追加
 
-- **ユニットテスト**: `src/lib/__tests__/` に配置
-- **E2Eテスト**: `e2e/` に配置
+- **ユニットテスト**: `test/unit/` に配置
+- **E2Eテスト**: `test/e2e/` に配置
 
 詳細は [Testing Guide](./doc/Testing.md) を参照してください。
 

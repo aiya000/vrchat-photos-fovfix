@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest'
-import { applyFovFix, imageToCanvas, canvasToBlob, FovSchema } from '../fovfix'
+import { applyFovFix, imageToCanvas, canvasToBlob, FovSchema } from '@/lib/fovfix'
 
 describe('FovSchema', () => {
   it('有効なFOV値を受け入れる', () => {
