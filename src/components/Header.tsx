@@ -25,19 +25,22 @@ export function Header(): React.JSX.Element {
           <span className="block w-5 h-0.5 bg-foreground" />
         </button>
       </div>
-      {isMenuOpen && (
-        <nav className="absolute right-0 top-full z-50 min-w-48 border border-border bg-surface shadow-lg rounded-bl-xl">
-          <Link
-            href="/oss"
-            className="block px-4 py-3 text-sm hover:bg-border/30 transition-colors"
-            onClick={() => {
-              setIsMenuOpen(false)
-            }}
-          >
-            {t.navOssLink}
-          </Link>
-        </nav>
-      )}
+      <nav
+        className={`absolute right-0 top-full z-50 min-w-48 border border-border bg-surface shadow-lg rounded-bl-xl transition-opacity duration-200 ${
+          isMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+        }`}
+        aria-hidden={!isMenuOpen}
+      >
+        <Link
+          href="/oss"
+          className="block px-4 py-3 text-sm hover:bg-border/30 transition-colors"
+          onClick={() => {
+            setIsMenuOpen(false)
+          }}
+        >
+          {t.navOssLink}
+        </Link>
+      </nav>
     </header>
   )
 }
