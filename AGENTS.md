@@ -172,6 +172,11 @@ export default config
 
 ## Testing Changes
 
+### When Implementing Features
+- When you implement a new feature, **basically always add tests** for it:
+  - **Use case / scenario tests** (E2E tests): Add in `test/e2e/` and run with `bun run test:e2e`
+  - **Unit tests**: Add in `test/unit/` and run with `bun run test:ut`
+
 ### Before Committing
 1. Run `bun run typecheck` to verify TypeScript types
 2. Run `bun run build` to ensure the build succeeds
