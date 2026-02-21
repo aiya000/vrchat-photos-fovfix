@@ -1,6 +1,8 @@
 const CACHE_NAME = 'vrchat-fovfix-v1'
 
-const PRECACHE_URLS = ['/', '/manifest.webmanifest', '/icon-192.png', '/icon-512.png']
+const PRECACHE_URLS = ['', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png'].map(
+  (relativePath) => new URL(relativePath, self.registration.scope).href,
+)
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
@@ -12,7 +14,13 @@ self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches
       .keys()
-      .then((keys) => Promise.all(keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key))))
+      .then((keys) =>
+        Promise.all(
+          keys
+            .filter((key) => key.startsWith('vrchat-fovfix-') && key !== CACHE_NAME)
+            .map((key) => caches.delete(key)),
+        ),
+      )
       .then(() => self.clients.claim()),
   )
 })
@@ -28,7 +36,12 @@ self.addEventListener('fetch', (event) => {
       return fetch(event.request).then((response) => {
         if (!response.ok) return response
         const cloned = response.clone()
-        caches.open(CACHE_NAME).then((cache) => cache.put(event.request, cloned))
+        event.waitUntil(
+          caches
+            .open(CACHE_NAME)
+            .then((cache) => cache.put(event.request, cloned))
+            .catch((err) => console.warn('Cache write failed:', err)),
+        )
         return response
       })
     }),
