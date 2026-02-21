@@ -129,8 +129,12 @@ test.describe('VRChat Photos FOV Fix - 正常系E2Eテスト', () => {
     
     const fovInput = page.locator('input[id="fov-input"]').or(page.locator('input[type="number"]'))
     
-    // 範囲外の値を入力（ただし、HTML5のバリデーションにより制限される可能性がある）
+    // 範囲外の値を入力
     await fovInput.first().fill('0')
+    
+    // エラーメッセージが表示されることを確認
+    const errorMessage = page.locator('text=/FOV.*1.*179/i')
+    await expect(errorMessage).toBeVisible({ timeout: 5000 })
     
     // 修正ボタンをクリック
     const fixButton = page.getByRole('button', { name: /修正|Fix/i })
@@ -139,6 +143,21 @@ test.describe('VRChat Photos FOV Fix - 正常系E2Eテスト', () => {
     // ダウンロードボタンが表示されないことを確認（無効なFOV値で処理が進まない）
     const downloadButton = page.getByRole('button', { name: /ダウンロード|Download/i })
     await expect(downloadButton).not.toBeVisible({ timeout: 5000 })
+    
+    // エラーメッセージがまだ表示されていることを確認
+    await expect(errorMessage).toBeVisible()
+    
+    // 範囲外の値(180)を入力
+    await fovInput.first().fill('180')
+    
+    // エラーメッセージが表示されることを確認
+    await expect(errorMessage).toBeVisible({ timeout: 5000 })
+    
+    // 正常な値に戻す
+    await fovInput.first().fill('50')
+    
+    // エラーメッセージが消えることを確認
+    await expect(errorMessage).not.toBeVisible({ timeout: 5000 })
   })
 
   test('FOV補正値を何度か変えて、修正を再実行する', async ({ page }) => {

@@ -22,12 +22,13 @@ beforeAll(() => {
       } as unknown as CanvasRenderingContext2D
     }
     return null
-  })
+  }) as typeof HTMLCanvasElement.prototype.getContext
 
   HTMLCanvasElement.prototype.toBlob = function (callback: (blob: Blob | null) => void, type = 'image/png') {
-    // Create a minimal blob
     const buffer = new Uint8Array(100)
     const blob = new Blob([buffer], { type })
-    setTimeout(() => callback(blob), 0)
+    setTimeout(() => {
+      callback(blob)
+    }, 0)
   }
 })

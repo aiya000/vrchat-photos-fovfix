@@ -15,7 +15,7 @@ const eslintConfig = defineConfig([
     "next-env.d.ts",
   ]),
   {
-    files: ["**/*.ts", "**/*.tsx", "**/*.mjs"],
+    files: ["**/*.ts", "**/*.tsx"],
     plugins: {
       "@typescript-eslint": tseslint,
     },
@@ -36,6 +36,12 @@ const eslintConfig = defineConfig([
       "@typescript-eslint/no-unsafe-return": "error",
       "@typescript-eslint/no-floating-promises": "error",
       "@typescript-eslint/strict-boolean-expressions": "error",
+    },
+  },
+  {
+    files: ["**/*.mjs"],
+    rules: {
+      ...prettierConfig.rules,
     },
   },
 ]);
