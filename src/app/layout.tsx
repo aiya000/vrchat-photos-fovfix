@@ -103,6 +103,11 @@ export default function RootLayout({
     <html lang="ja" suppressHydrationWarning>
       <head>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `if ('serviceWorker' in navigator) { navigator.serviceWorker.register('/sw.js').catch(function(e) { console.error('SW registration failed:', e) }) }`,
+          }}
+        />
       </head>
       <body>{children}</body>
     </html>
