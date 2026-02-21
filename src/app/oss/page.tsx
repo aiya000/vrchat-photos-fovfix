@@ -24,7 +24,7 @@ export default function OssPage(): React.JSX.Element {
       <div className="max-w-4xl mx-auto space-y-6">
         <header className="space-y-2">
           <Link href="/" className="text-sm text-muted hover:text-foreground transition-colors">
-            ← {t.siteTitle}
+            Back to {t.siteTitle}
           </Link>
           <h1 className="text-3xl font-bold">{t.ossPageTitle}</h1>
           <p className="text-muted">{t.ossPageDescription}</p>
