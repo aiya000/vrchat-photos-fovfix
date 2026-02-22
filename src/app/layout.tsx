@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next'
 import './globals.css'
+import { Header } from '@/components/Header'
 import { normalizeBasePath } from '../../basePath.config'
 
 const DEFAULT_SITE_URL = 'https://aiya000.github.io/vrchat-photos-fovfix'
@@ -23,6 +24,7 @@ const siteUrl = ((): string => {
     return DEFAULT_SITE_URL
   }
 })()
+
 export const metadata: Metadata = {
   title: 'VRChat写真歪み修正ツール',
   description: 'VRChat写真のFOV歪みを修正します',
@@ -119,7 +121,10 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body>{children}</body>
+      <body>
+        <Header />
+        {children}
+      </body>
     </html>
   )
 }

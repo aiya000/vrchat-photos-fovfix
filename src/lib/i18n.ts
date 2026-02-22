@@ -27,6 +27,11 @@ export interface Translations {
   clearButton: string
   imageCount: (n: number) => string
   processingProgress: (current: number, total: number) => string
+  menuButton: string
+  navOssLink: string
+  ossPageTitle: string
+  ossPageDescription: string
+  ossLicenseLabel: string
 }
 
 const translations: Record<Locale, Translations> = {
@@ -56,6 +61,11 @@ const translations: Record<Locale, Translations> = {
     imageCount: (n: number): string => `${String(n)} image${n !== 1 ? 's' : ''}`,
     processingProgress: (current: number, total: number): string =>
       `Processing ${String(current)} / ${String(total)}...`,
+    menuButton: 'Open menu',
+    navOssLink: 'OSS Licenses',
+    ossPageTitle: 'Open Source Software',
+    ossPageDescription: 'This application uses the following open source software.',
+    ossLicenseLabel: 'License',
   },
   ja: {
     siteTitle: 'VRChat写真歪み修正ツール',
@@ -82,6 +92,11 @@ const translations: Record<Locale, Translations> = {
     clearButton: 'すべてクリア',
     imageCount: (n: number): string => `${String(n)}枚`,
     processingProgress: (current: number, total: number): string => `処理中 ${String(current)} / ${String(total)}...`,
+    menuButton: 'メニューを開く',
+    navOssLink: '使用したOSS',
+    ossPageTitle: '使用したOSS',
+    ossPageDescription: 'このアプリケーションは以下のオープンソースソフトウェアを使用しています。',
+    ossLicenseLabel: 'ライセンス',
   },
 }
 
