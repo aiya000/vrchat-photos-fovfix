@@ -1,0 +1,242 @@
+name: Visual Diff
+
+on:
+  pull_request:
+    types: [synchronize, opened, reopened]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  visual-diff:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout PR branch
+        uses: actions/checkout@v4
+        with:
+          path: pr-branch
+
+      - name: Checkout base branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.base_ref }}
+          path: base-branch
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.x
+
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.bun/install/cache
+          key: ${{ runner.os }}-bun-${{ hashFiles('pr-branch/bun.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-bun-
+
+      - name: Install dependencies (base branch)
+        working-directory: base-branch
+        run: bun install --frozen-lockfile
+
+      - name: Install dependencies (PR branch)
+        working-directory: pr-branch
+        run: bun install --frozen-lockfile
+
+      - name: Install Playwright browsers
+        working-directory: pr-branch
+        run: bunx playwright install --with-deps chromium
+
+      - name: Build base branch
+        working-directory: base-branch
+        run: bun run build
+
+      - name: Build PR branch
+        working-directory: pr-branch
+        run: bun run build
+
+      - name: Capture base screenshots
+        working-directory: pr-branch
+        run: bun scripts/capture-screenshots.mts --out-dir ../base-branch/out --output-dir ../base-screenshots
+
+      - name: Capture PR screenshots
+        working-directory: pr-branch
+        run: bun scripts/capture-screenshots.mts --out-dir out --output-dir ../pr-screenshots
+
+      - name: Compare screenshots
+        id: compare
+        run: |
+          mkdir -p diff-output/before diff-output/after diff-output/diff
+          CHANGED_PAGES=""
+
+          for page in home oss; do
+            BASE="base-screenshots/${page}.png"
+            PR="pr-screenshots/${page}.png"
+
+            if [ ! -f "$BASE" ] || [ ! -f "$PR" ]; then
+              continue
+            fi
+
+            DIFF="diff-output/diff/${page}.png"
+            diff_exit=0
+            compare -metric AE -fuzz 1% "$BASE" "$PR" "$DIFF" > /dev/null 2>&1 || diff_exit=$?
+
+            if [ "$diff_exit" -eq 1 ]; then
+              cp "$BASE" "diff-output/before/${page}.png"
+              cp "$PR" "diff-output/after/${page}.png"
+              CHANGED_PAGES="${CHANGED_PAGES}${page},"
+            elif [ "$diff_exit" -ne 0 ]; then
+              echo "Warning: compare exited with code ${diff_exit} for page '${page}', skipping"
+            fi
+          done
+
+          CHANGED_PAGES="${CHANGED_PAGES%,}"
+          echo "changed_pages=${CHANGED_PAGES}" >> "$GITHUB_OUTPUT"
+          if [ -n "$CHANGED_PAGES" ]; then
+            echo "has_diffs=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_diffs=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Upload screenshots to screenshots-store branch and post PR comment
+        if: steps.compare.outputs.has_diffs == 'true'
+        uses: actions/github-script@v7
+        env:
+          CHANGED_PAGES: ${{ steps.compare.outputs.changed_pages }}
+        with:
+          script: |
+            const fs = require('fs')
+            const path = require('path')
+
+            const owner = context.repo.owner
+            const repo = context.repo.repo
+            const prNumber = context.payload.pull_request.number
+            const runId = context.runId
+            const BRANCH = 'screenshots-store'
+            const remoteBase = `pr-${prNumber}/${runId}`
+
+            async function ensureBranch() {
+              try {
+                await github.rest.repos.getBranch({ owner, repo, branch: BRANCH })
+              } catch (err) {
+                if (err.status !== 404) throw err
+
+                const { data: tree } = await github.rest.git.createTree({ owner, repo, tree: [] })
+                const { data: commit } = await github.rest.git.createCommit({
+                  owner,
+                  repo,
+                  message: 'chore: init screenshots-store branch',
+                  tree: tree.sha,
+                  parents: [],
+                })
+                try {
+                  await github.rest.git.createRef({
+                    owner,
+                    repo,
+                    ref: `refs/heads/${BRANCH}`,
+                    sha: commit.sha,
+                  })
+                } catch (createErr) {
+                  if (createErr.status !== 422) throw createErr
+                }
+              }
+            }
+
+            async function uploadFile(localPath, remotePath) {
+              const content = fs.readFileSync(localPath).toString('base64')
+              let sha
+              try {
+                const { data } = await github.rest.repos.getContent({
+                  owner,
+                  repo,
+                  path: remotePath,
+                  ref: BRANCH,
+                })
+                if (!Array.isArray(data) && data.type === 'file') {
+                  sha = data.sha
+                }
+              } catch (err) {
+                if (err.status !== 404) throw err
+              }
+              await github.rest.repos.createOrUpdateFileContents({
+                owner,
+                repo,
+                path: remotePath,
+                message: `chore: visual diff screenshots for PR #${prNumber}`,
+                content,
+                ...(sha !== undefined ? { sha } : {}),
+                branch: BRANCH,
+              })
+            }
+
+            await ensureBranch()
+
+            const diffOutputDir = path.join(process.env.GITHUB_WORKSPACE, 'diff-output')
+            const changedPages = process.env.CHANGED_PAGES.split(',').filter(Boolean)
+
+            for (const page of changedPages) {
+              await uploadFile(
+                path.join(diffOutputDir, 'before', `${page}.png`),
+                `${remoteBase}/before-${page}.png`,
+              )
+              await uploadFile(
+                path.join(diffOutputDir, 'after', `${page}.png`),
+                `${remoteBase}/after-${page}.png`,
+              )
+              const diffFile = path.join(diffOutputDir, 'diff', `${page}.png`)
+              if (fs.existsSync(diffFile)) {
+                await uploadFile(diffFile, `${remoteBase}/diff-${page}.png`)
+              }
+            }
+
+            const rawBase = `https://raw.githubusercontent.com/${owner}/${repo}/${BRANCH}/${remoteBase}`
+            const pageDisplayNames = {
+              home: 'ホーム (`/`)',
+              oss: 'OSSライセンス (`/oss`)',
+            }
+
+            const rows = changedPages
+              .map((page) => {
+                const displayName = Object.prototype.hasOwnProperty.call(pageDisplayNames, page)
+                  ? pageDisplayNames[page]
+                  : page
+                return `| ${displayName} | ![](${rawBase}/before-${page}.png) | ![](${rawBase}/after-${page}.png) | ![](${rawBase}/diff-${page}.png) |`
+              })
+              .join('\n')
+
+            const body = [
+              '## 📸 Visual Diff',
+              '',
+              'スクリーンショットの差分です。',
+              '',
+              '| ページ | Before | After | Diff |',
+              '|--------|--------|-------|------|',
+              rows,
+            ].join('\n')
+
+            const { data: comments } = await github.rest.issues.listComments({
+              owner,
+              repo,
+              issue_number: prNumber,
+            })
+
+            const existing = comments.find(
+              (c) => c.user?.login === 'github-actions[bot]' && c.body?.includes('📸 Visual Diff'),
+            )
+
+            if (existing !== undefined) {
+              await github.rest.issues.updateComment({
+                owner,
+                repo,
+                comment_id: existing.id,
+                body,
+              })
+            } else {
+              await github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number: prNumber,
+                body,
+              })
+            }
