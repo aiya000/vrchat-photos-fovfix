@@ -26,6 +26,7 @@ export interface Translations {
   fixedLabel: string
   clearButton: string
   imageCount: (n: number) => string
+  removeImageLabel: (fileName: string) => string
   processingProgress: (current: number, total: number) => string
   menuButton: string
   navOssLink: string
@@ -59,6 +60,7 @@ const translations: Record<Locale, Translations> = {
     fixedLabel: 'Fixed',
     clearButton: 'Clear All',
     imageCount: (n: number): string => `${String(n)} image${n !== 1 ? 's' : ''}`,
+    removeImageLabel: (fileName: string): string => `Remove ${fileName}`,
     processingProgress: (current: number, total: number): string =>
       `Processing ${String(current)} / ${String(total)}...`,
     menuButton: 'Open menu',
@@ -91,6 +93,7 @@ const translations: Record<Locale, Translations> = {
     fixedLabel: '修正済み',
     clearButton: 'すべてクリア',
     imageCount: (n: number): string => `${String(n)}枚`,
+    removeImageLabel: (fileName: string): string => `${fileName} を削除`,
     processingProgress: (current: number, total: number): string => `処理中 ${String(current)} / ${String(total)}...`,
     menuButton: 'メニューを開く',
     navOssLink: '使用したOSS',

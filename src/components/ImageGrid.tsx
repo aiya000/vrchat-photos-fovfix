@@ -1,14 +1,16 @@
 'use client'
 
 import Image from 'next/image'
+import type { Translations } from '@/lib/i18n'
 import type { UploadedImage } from '@/lib/types'
 
 interface ImageGridProps {
   images: UploadedImage[]
   onRemove: (id: string) => void
+  t: Translations
 }
 
-export function ImageGrid({ images, onRemove }: ImageGridProps): React.JSX.Element {
+export function ImageGrid({ images, onRemove, t }: ImageGridProps): React.JSX.Element {
   if (images.length === 0) {
     return <></>
   }
@@ -29,7 +31,7 @@ export function ImageGrid({ images, onRemove }: ImageGridProps): React.JSX.Eleme
             onClick={() => {
               onRemove(img.id)
             }}
-            aria-label={`${img.file.name} を削除`}
+            aria-label={t.removeImageLabel(img.file.name)}
             className="absolute top-1 right-1 w-6 h-6 rounded-full bg-red-500 text-white flex items-center justify-center text-xs hover:bg-red-600 transition-colors"
           >
             ✕

@@ -169,7 +169,7 @@ export default function Home(): React.JSX.Element {
 
         <UploadArea t={t} onFilesSelected={handleFilesSelected} imageCount={uploadedImages.length} />
 
-        <ImageGrid images={uploadedImages} onRemove={handleRemoveImage} />
+        <ImageGrid images={uploadedImages} onRemove={handleRemoveImage} t={t} />
 
         {uploadedImages.length > 0 && (
           <div className="flex flex-col gap-2">
