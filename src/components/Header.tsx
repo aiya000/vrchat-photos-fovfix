@@ -69,6 +69,7 @@ export function Header(): React.JSX.Element {
           isMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
         }`}
         aria-hidden={!isMenuOpen}
+        inert={!isMenuOpen}
       >
         <Link
           href="/oss"
