@@ -1,13 +1,18 @@
 import type { MetadataRoute } from 'next'
+import { normalizeBasePath } from '../../basePath.config'
 
 export const dynamic = 'force-static'
 
 export default function manifest(): MetadataRoute.Manifest {
+  const basePath = normalizeBasePath(process.env.NEXT_PUBLIC_BASE_PATH)
+  const startUrl = basePath + '/'
+
   return {
     name: 'VRChat写真歪み修正ツール',
     short_name: 'VRC FOV Fix',
     description: 'VRChat写真のFOV（視野角）歪みを修正するWebアプリケーション',
-    start_url: '/',
+    start_url: startUrl,
+    scope: startUrl,
     display: 'standalone',
     background_color: '#ffffff',
     theme_color: '#000000',
