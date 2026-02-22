@@ -110,7 +110,7 @@ test.describe('VRChat Photos FOV Fix - 正常系E2Eテスト', () => {
     await expect(page.locator('img[src*="blob:"]')).toHaveCount(2, { timeout: 10000 })
 
     // 1枚目の×ボタンをクリック
-    const deleteButton = page.getByRole('button', { name: /を削除/ }).first()
+    const deleteButton = page.getByRole('button', { name: /削除|Delete/i }).first()
     await expect(deleteButton).toBeVisible()
     await deleteButton.click()
 
