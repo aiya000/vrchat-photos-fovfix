@@ -1,6 +1,6 @@
-const CACHE_NAME = 'vrchat-fovfix-v1'
+const CACHE_NAME = 'vrchat-fovfix-v2'
 
-const PRECACHE_URLS = ['', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png'].map(
+const PRECACHE_URLS = ['', 'icon-192.png', 'icon-512.png'].map(
   (relativePath) => new URL(relativePath, self.registration.scope).href,
 )
 
@@ -27,6 +27,11 @@ self.addEventListener('activate', (event) => {
 
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return
+
+  // Always fetch manifest from network to avoid serving a stale start_url
+  if (new URL(event.request.url).pathname.endsWith('/manifest.webmanifest')) {
+    return
+  }
 
   event.respondWith(
     caches.match(event.request).then((cached) => {
