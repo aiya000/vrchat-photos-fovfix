@@ -91,6 +91,6 @@ test.describe('ハンバーガーメニューとOSSページ', () => {
     await expect(backLink).toBeVisible()
     await backLink.click()
 
-    await expect(page).toHaveURL(/\/$|\/(?!oss)/)
+    await expect(page).toHaveURL('/')
   })
 })
