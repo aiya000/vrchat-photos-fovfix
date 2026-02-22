@@ -12,7 +12,7 @@ export function OssContent(): React.JSX.Element {
       <div className="max-w-4xl mx-auto space-y-6">
         <header className="space-y-2">
           <Link href="/" className="text-sm text-muted hover:text-foreground transition-colors">
-            Back to {t.siteTitle}
+            ← {t.siteTitle}
           </Link>
           <h1 className="text-3xl font-bold">{t.ossPageTitle}</h1>
           <p className="text-muted">{t.ossPageDescription}</p>
