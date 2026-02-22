@@ -16,7 +16,7 @@ export function ImageGrid({ images, onRemove }: ImageGridProps): React.JSX.Eleme
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
       {images.map((img) => (
-        <div key={img.id} className="relative group rounded-lg overflow-hidden bg-surface border border-border">
+        <div key={img.id} className="relative rounded-lg overflow-hidden bg-surface border border-border">
           <Image
             src={img.previewUrl}
             alt={img.file.name}
@@ -29,7 +29,8 @@ export function ImageGrid({ images, onRemove }: ImageGridProps): React.JSX.Eleme
             onClick={() => {
               onRemove(img.id)
             }}
-            className="absolute top-1 right-1 w-6 h-6 rounded-full bg-red-500 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity text-xs"
+            aria-label={`${img.file.name} を削除`}
+            className="absolute top-1 right-1 w-6 h-6 rounded-full bg-red-500 text-white flex items-center justify-center text-xs hover:bg-red-600 transition-colors"
           >
             ✕
           </button>
