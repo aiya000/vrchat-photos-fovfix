@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next'
 import './globals.css'
+import { normalizeBasePath } from '../../basePath.config'
 
 const DEFAULT_SITE_URL = 'https://aiya000.github.io/vrchat-photos-fovfix'
 
@@ -81,6 +82,10 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>): React.JSX.Element {
+  const basePath = normalizeBasePath(process.env.NEXT_PUBLIC_BASE_PATH)
+  const swScope = basePath + '/'
+  const swUrl = basePath + '/sw.js'
+
   // JSON-LD structured data for better SEO
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -103,6 +108,16 @@ export default function RootLayout({
     <html lang="ja" suppressHydrationWarning>
       <head>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "if ('serviceWorker' in navigator) { navigator.serviceWorker.register('" +
+              swUrl +
+              "', { scope: '" +
+              swScope +
+              "' }).catch(function(e) { console.error('SW registration failed:', e) }) }",
+          }}
+        />
       </head>
       <body>{children}</body>
     </html>
