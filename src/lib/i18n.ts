@@ -60,7 +60,7 @@ const translations: Record<Locale, Translations> = {
     fixedLabel: 'Fixed',
     clearButton: 'Clear All',
     imageCount: (n: number): string => `${String(n)} image${n !== 1 ? 's' : ''}`,
-    removeImageLabel: (fileName: string): string => `Remove ${fileName}`,
+    removeImageLabel: (fileName: string): string => `Delete ${fileName}`,
     processingProgress: (current: number, total: number): string =>
       `Processing ${String(current)} / ${String(total)}...`,
     menuButton: 'Open menu',
