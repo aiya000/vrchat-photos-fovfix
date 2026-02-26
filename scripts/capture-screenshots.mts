@@ -1,9 +1,9 @@
 import { chromium } from '@playwright/test'
-import http from 'http'
 import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import type { AddressInfo } from 'net'
+import { createStaticServer } from './static-server.mts'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
@@ -27,72 +27,6 @@ function parseArgs(): { outDir: string; outputDir: string } {
   return { outDir, outputDir }
 }
 
-const MIME_TYPES: Record<string, string> = {
-  '.html': 'text/html',
-  '.css': 'text/css',
-  '.js': 'application/javascript',
-  '.json': 'application/json',
-  '.png': 'image/png',
-  '.jpg': 'image/jpeg',
-  '.jpeg': 'image/jpeg',
-  '.gif': 'image/gif',
-  '.svg': 'image/svg+xml',
-  '.ico': 'image/x-icon',
-  '.webp': 'image/webp',
-  '.txt': 'text/plain',
-}
-
-function createStaticServer(outDir: string): http.Server {
-  return http.createServer(async (req, res) => {
-    const rawUrl = req.url ?? '/'
-    const pathOnly = rawUrl.split(/[?#]/)[0] ?? '/'
-
-    let decodedPath: string
-    try {
-      decodedPath = decodeURIComponent(pathOnly)
-    } catch {
-      res.writeHead(400)
-      res.end('Bad Request')
-      return
-    }
-
-    let normalizedPath = path.normalize(decodedPath)
-
-    if (normalizedPath === '/' || normalizedPath === '.') {
-      normalizedPath = 'index.html'
-    } else {
-      normalizedPath = normalizedPath.replace(/^[/\\]+/, '')
-    }
-
-    let filePath = path.resolve(outDir, normalizedPath)
-    const resolvedOutDir = path.resolve(outDir)
-
-    const relativePath = path.relative(resolvedOutDir, filePath)
-    if (relativePath.startsWith('..') || path.isAbsolute(relativePath)) {
-      res.writeHead(403)
-      res.end('Forbidden')
-      return
-    }
-
-    if (!path.extname(filePath) && fs.existsSync(filePath + '.html')) {
-      filePath = filePath + '.html'
-    } else if (fs.existsSync(filePath) && fs.statSync(filePath).isDirectory()) {
-      filePath = path.join(filePath, 'index.html')
-    }
-
-    try {
-      const data = await fs.promises.readFile(filePath)
-      const ext = path.extname(filePath)
-      const mimeType = MIME_TYPES[ext] ?? 'application/octet-stream'
-      res.writeHead(200, { 'Content-Type': mimeType })
-      res.end(data)
-    } catch {
-      res.writeHead(404)
-      res.end('Not Found')
-    }
-  })
-}
-
 const PAGES: Array<{ name: string; route: string }> = [
   { name: 'home', route: '/' },
   { name: 'oss', route: '/oss' },
@@ -109,8 +43,10 @@ async function main(): Promise<void> {
   fs.mkdirSync(outputDir, { recursive: true })
 
   const server = createStaticServer(outDir)
-  await new Promise<void>((resolve) => {
+  await new Promise<void>((resolve, reject) => {
+    server.once('error', reject)
     server.listen(0, () => {
+      server.removeListener('error', reject)
       resolve()
     })
   })
@@ -127,7 +63,11 @@ async function main(): Promise<void> {
     const page = await context.newPage()
 
     for (const { name, route } of PAGES) {
-      await page.goto(`${baseUrl}${route}`)
+      const response = await page.goto(`${baseUrl}${route}`)
+      if (response === null || !response.ok()) {
+        const status = response !== null ? response.status() : 'no response'
+        throw new Error(`Failed to load ${baseUrl}${route}: status ${String(status)}`)
+      }
       await page.waitForLoadState('networkidle')
       await page.screenshot({
         path: path.join(outputDir, `${name}.png`),
@@ -139,9 +79,13 @@ async function main(): Promise<void> {
     await context.close()
   } finally {
     await browser.close()
-    await new Promise<void>((resolve) => {
-      server.close(() => {
-        resolve()
+    await new Promise<void>((resolve, reject) => {
+      server.close((err) => {
+        if (err !== undefined) {
+          reject(err)
+        } else {
+          resolve()
+        }
       })
     })
   }
@@ -151,3 +95,4 @@ main().catch((err: unknown) => {
   console.error(err)
   process.exit(1)
 })
+

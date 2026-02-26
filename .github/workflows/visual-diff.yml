@@ -10,6 +10,7 @@ permissions:
 
 jobs:
   visual-diff:
+    if: ${{ !github.event.pull_request.head.repo.fork }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout PR branch
@@ -47,6 +48,9 @@ jobs:
       - name: Install Playwright browsers
         working-directory: pr-branch
         run: bunx playwright install --with-deps chromium
+
+      - name: Install ImageMagick
+        run: sudo apt-get install -y imagemagick
 
       - name: Build base branch
         working-directory: base-branch
@@ -87,7 +91,8 @@ jobs:
               cp "$PR" "diff-output/after/${page}.png"
               CHANGED_PAGES="${CHANGED_PAGES}${page},"
             elif [ "$diff_exit" -ne 0 ]; then
-              echo "Warning: compare exited with code ${diff_exit} for page '${page}', skipping"
+              echo "Error: compare exited with unexpected code ${diff_exit} for page '${page}'" >&2
+              exit 1
             fi
           done
 
@@ -115,6 +120,7 @@ jobs:
             const runId = context.runId
             const BRANCH = 'screenshots-store'
             const remoteBase = `pr-${prNumber}/${runId}`
+            const VISUAL_DIFF_COMMENT_MARKER = '<!-- visual-diff-bot -->'
 
             async function ensureBranch() {
               try {
@@ -143,30 +149,49 @@ jobs:
               }
             }
 
-            async function uploadFile(localPath, remotePath) {
-              const content = fs.readFileSync(localPath).toString('base64')
-              let sha
-              try {
-                const { data } = await github.rest.repos.getContent({
-                  owner,
-                  repo,
-                  path: remotePath,
-                  ref: BRANCH,
+            async function batchUploadFiles(files) {
+              const { data: branchData } = await github.rest.repos.getBranch({ owner, repo, branch: BRANCH })
+              const baseSha = branchData.commit.sha
+              const baseTreeSha = branchData.commit.commit.tree.sha
+
+              const treeEntries = await Promise.all(
+                files.map(async ({ localPath, remotePath }) => {
+                  const content = fs.readFileSync(localPath).toString('base64')
+                  const { data: blob } = await github.rest.git.createBlob({
+                    owner,
+                    repo,
+                    content,
+                    encoding: 'base64',
+                  })
+                  return {
+                    path: remotePath,
+                    mode: '100644',
+                    type: 'blob',
+                    sha: blob.sha,
+                  }
                 })
-                if (!Array.isArray(data) && data.type === 'file') {
-                  sha = data.sha
-                }
-              } catch (err) {
-                if (err.status !== 404) throw err
-              }
-              await github.rest.repos.createOrUpdateFileContents({
+              )
+
+              const { data: newTree } = await github.rest.git.createTree({
                 owner,
                 repo,
-                path: remotePath,
-                message: `chore: visual diff screenshots for PR #${prNumber}`,
-                content,
-                ...(sha !== undefined ? { sha } : {}),
-                branch: BRANCH,
+                base_tree: baseTreeSha,
+                tree: treeEntries,
+              })
+
+              const { data: commit } = await github.rest.git.createCommit({
+                owner,
+                repo,
+                message: `chore: upload visual diff screenshots for PR #${prNumber} run ${runId}`,
+                tree: newTree.sha,
+                parents: [baseSha],
+              })
+
+              await github.rest.git.updateRef({
+                owner,
+                repo,
+                ref: `heads/${BRANCH}`,
+                sha: commit.sha,
               })
             }
 
@@ -175,20 +200,26 @@ jobs:
             const diffOutputDir = path.join(process.env.GITHUB_WORKSPACE, 'diff-output')
             const changedPages = process.env.CHANGED_PAGES.split(',').filter(Boolean)
 
+            const filesToUpload = []
             for (const page of changedPages) {
-              await uploadFile(
-                path.join(diffOutputDir, 'before', `${page}.png`),
-                `${remoteBase}/before-${page}.png`,
-              )
-              await uploadFile(
-                path.join(diffOutputDir, 'after', `${page}.png`),
-                `${remoteBase}/after-${page}.png`,
-              )
+              filesToUpload.push({
+                localPath: path.join(diffOutputDir, 'before', `${page}.png`),
+                remotePath: `${remoteBase}/before-${page}.png`,
+              })
+              filesToUpload.push({
+                localPath: path.join(diffOutputDir, 'after', `${page}.png`),
+                remotePath: `${remoteBase}/after-${page}.png`,
+              })
               const diffFile = path.join(diffOutputDir, 'diff', `${page}.png`)
               if (fs.existsSync(diffFile)) {
-                await uploadFile(diffFile, `${remoteBase}/diff-${page}.png`)
+                filesToUpload.push({
+                  localPath: diffFile,
+                  remotePath: `${remoteBase}/diff-${page}.png`,
+                })
               }
             }
+
+            await batchUploadFiles(filesToUpload)
 
             const rawBase = `https://raw.githubusercontent.com/${owner}/${repo}/${BRANCH}/${remoteBase}`
             const pageDisplayNames = {
@@ -206,6 +237,7 @@ jobs:
               .join('\n')
 
             const body = [
+              VISUAL_DIFF_COMMENT_MARKER,
               '## 📸 Visual Diff',
               '',
               'スクリーンショットの差分です。',
@@ -222,7 +254,7 @@ jobs:
             })
 
             const existing = comments.find(
-              (c) => c.user?.login === 'github-actions[bot]' && c.body?.includes('📸 Visual Diff'),
+              (c) => c.user?.login === 'github-actions[bot]' && c.body?.includes(VISUAL_DIFF_COMMENT_MARKER),
             )
 
             if (existing !== undefined) {
@@ -240,3 +272,4 @@ jobs:
                 body,
               })
             }
+
