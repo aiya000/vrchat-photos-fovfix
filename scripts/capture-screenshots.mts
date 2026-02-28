@@ -43,42 +43,45 @@ async function main(): Promise<void> {
   fs.mkdirSync(outputDir, { recursive: true })
 
   const server = createStaticServer(outDir)
-  await new Promise<void>((resolve, reject) => {
-    server.once('error', reject)
-    server.listen(0, () => {
-      server.removeListener('error', reject)
-      resolve()
-    })
-  })
-
-  const address = server.address() as AddressInfo
-  const baseUrl = `http://localhost:${String(address.port)}`
-  console.log(`Server started at ${baseUrl}`)
-
-  const browser = await chromium.launch()
   try {
-    const context = await browser.newContext({
-      viewport: { width: 1280, height: 720 },
-    })
-    const page = await context.newPage()
-
-    for (const { name, route } of PAGES) {
-      const response = await page.goto(`${baseUrl}${route}`)
-      if (response === null || !response.ok()) {
-        const status = response !== null ? response.status() : 'no response'
-        throw new Error(`Failed to load ${baseUrl}${route}: status ${String(status)}`)
-      }
-      await page.waitForLoadState('networkidle')
-      await page.screenshot({
-        path: path.join(outputDir, `${name}.png`),
-        fullPage: true,
+    await new Promise<void>((resolve, reject) => {
+      server.once('error', reject)
+      server.listen(0, () => {
+        server.removeListener('error', reject)
+        resolve()
       })
-      console.log(`Captured: ${name}`)
-    }
+    })
 
-    await context.close()
+    const address = server.address() as AddressInfo
+    const baseUrl = `http://localhost:${String(address.port)}`
+    console.log(`Server started at ${baseUrl}`)
+
+    const browser = await chromium.launch()
+    try {
+      const context = await browser.newContext({
+        viewport: { width: 1280, height: 720 },
+      })
+      const page = await context.newPage()
+
+      for (const { name, route } of PAGES) {
+        const response = await page.goto(`${baseUrl}${route}`)
+        if (response === null || !response.ok()) {
+          const status = response !== null ? response.status() : 'no response'
+          throw new Error(`Failed to load ${baseUrl}${route}: status ${String(status)}`)
+        }
+        await page.waitForLoadState('networkidle')
+        await page.screenshot({
+          path: path.join(outputDir, `${name}.png`),
+          fullPage: true,
+        })
+        console.log(`Captured: ${name}`)
+      }
+
+      await context.close()
+    } finally {
+      await browser.close()
+    }
   } finally {
-    await browser.close()
     await new Promise<void>((resolve, reject) => {
       server.close((err) => {
         if (err !== undefined) {
@@ -95,4 +98,3 @@ main().catch((err: unknown) => {
   console.error(err)
   process.exit(1)
 })
-

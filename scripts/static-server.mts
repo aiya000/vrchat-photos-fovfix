@@ -55,10 +55,14 @@ export function createStaticServer(outDir: string, options: StaticServerOptions 
       return
     }
 
-    if (!path.extname(filePath) && fs.existsSync(filePath + '.html')) {
-      filePath = filePath + '.html'
-    } else if (fs.existsSync(filePath) && fs.statSync(filePath).isDirectory()) {
-      filePath = path.join(filePath, 'index.html')
+    try {
+      if (!path.extname(filePath) && fs.existsSync(filePath + '.html')) {
+        filePath = filePath + '.html'
+      } else if (fs.existsSync(filePath) && fs.statSync(filePath).isDirectory()) {
+        filePath = path.join(filePath, 'index.html')
+      }
+    } catch {
+      // statSync failed (e.g. TOCTOU race); fall through to readFile below
     }
 
     try {
@@ -67,16 +71,28 @@ export function createStaticServer(outDir: string, options: StaticServerOptions 
       const mimeType = MIME_TYPES[ext] ?? 'application/octet-stream'
       res.writeHead(200, { 'Content-Type': mimeType })
       res.end(data)
-    } catch {
+    } catch (error) {
+      const code = (error as NodeJS.ErrnoException).code
+      if (code !== 'ENOENT') {
+        res.writeHead(500, { 'Content-Type': 'text/plain' })
+        res.end('500 Internal Server Error')
+        return
+      }
       if (spaFallback) {
         const indexPath = path.join(resolvedOutDir, 'index.html')
         try {
           const indexData = await fs.promises.readFile(indexPath)
           res.writeHead(200, { 'Content-Type': 'text/html' })
           res.end(indexData)
-        } catch {
-          res.writeHead(404, { 'Content-Type': 'text/plain' })
-          res.end('404 Not Found')
+        } catch (indexError) {
+          const indexCode = (indexError as NodeJS.ErrnoException).code
+          if (indexCode !== 'ENOENT') {
+            res.writeHead(500, { 'Content-Type': 'text/plain' })
+            res.end('500 Internal Server Error')
+          } else {
+            res.writeHead(404, { 'Content-Type': 'text/plain' })
+            res.end('404 Not Found')
+          }
         }
       } else {
         res.writeHead(404, { 'Content-Type': 'text/plain' })
