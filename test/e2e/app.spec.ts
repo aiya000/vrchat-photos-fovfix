@@ -99,6 +99,25 @@ test.describe('VRChat Photos FOV Fix - 正常系E2Eテスト', () => {
     await expect(downloadButton).toBeVisible({ timeout: 30000 })
   })
 
+  test('×ボタンで個別に画像を削除できる', async ({ page }) => {
+    await page.goto('/')
+
+    const fileInputLocator = page.locator('input[type="file"]')
+    const testImagePath = path.join(__dirname, 'fixtures', 'test-photo.png')
+
+    // 画像を2枚アップロード
+    await fileInputLocator.setInputFiles([testImagePath, testImagePath])
+    await expect(page.locator('img[src*="blob:"]')).toHaveCount(2, { timeout: 10000 })
+
+    // 1枚目の×ボタンをクリック
+    const deleteButton = page.getByRole('button', { name: /削除|Delete/i }).first()
+    await expect(deleteButton).toBeVisible()
+    await deleteButton.click()
+
+    // 画像が1枚に減ったことを確認
+    await expect(page.locator('img[src*="blob:"]')).toHaveCount(1, { timeout: 5000 })
+  })
+
   test('画像のクリア機能が動作する', async ({ page }) => {
     await page.goto('/')
     
