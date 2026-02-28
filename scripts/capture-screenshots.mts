@@ -82,15 +82,17 @@ async function main(): Promise<void> {
       await browser.close()
     }
   } finally {
-    await new Promise<void>((resolve, reject) => {
-      server.close((err) => {
-        if (err !== undefined) {
-          reject(err)
-        } else {
-          resolve()
-        }
+    if (server.listening) {
+      await new Promise<void>((resolve, reject) => {
+        server.close((err) => {
+          if (err !== undefined) {
+            reject(err)
+          } else {
+            resolve()
+          }
+        })
       })
-    })
+    }
   }
 }
 

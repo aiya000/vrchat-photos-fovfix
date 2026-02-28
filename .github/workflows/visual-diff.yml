@@ -98,7 +98,10 @@ jobs:
             PR="pr-screenshots/${page}.png"
 
             if [ ! -f "$BASE" ] || [ ! -f "$PR" ]; then
-              continue
+              echo "Error: Missing required screenshot(s) for page '${page}'." >&2
+              echo "  Expected base: ${BASE}" >&2
+              echo "  Expected PR:   ${PR}" >&2
+              exit 1
             fi
 
             DIFF="diff-output/diff/${page}.png"
@@ -138,7 +141,7 @@ jobs:
             const prNumber = context.payload.pull_request.number
             const runId = context.runId
             const BRANCH = 'screenshots-store'
-            const remoteBase = `pr-${prNumber}/${runId}`
+            const remoteBase = `pr-${prNumber}/latest`
             const VISUAL_DIFF_COMMENT_MARKER = '<!-- visual-diff-bot -->'
 
             async function ensureBranch() {
