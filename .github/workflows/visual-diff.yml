@@ -144,6 +144,18 @@ jobs:
             const remoteBase = `pr-${prNumber}/latest`
             const VISUAL_DIFF_COMMENT_MARKER = '<!-- visual-diff-bot -->'
 
+            async function findExistingComment() {
+              const allComments = await github.paginate(github.rest.issues.listComments, {
+                owner,
+                repo,
+                issue_number: prNumber,
+                per_page: 100,
+              })
+              return allComments.find(
+                (c) => c.user?.login === 'github-actions[bot]' && c.body?.includes(VISUAL_DIFF_COMMENT_MARKER),
+              )
+            }
+
             async function ensureBranch() {
               try {
                 await github.rest.repos.getBranch({ owner, repo, branch: BRANCH })
@@ -287,15 +299,7 @@ jobs:
               rows,
             ].join('\n')
 
-            const { data: comments } = await github.rest.issues.listComments({
-              owner,
-              repo,
-              issue_number: prNumber,
-            })
-
-            const existing = comments.find(
-              (c) => c.user?.login === 'github-actions[bot]' && c.body?.includes(VISUAL_DIFF_COMMENT_MARKER),
-            )
+            const existing = await findExistingComment()
 
             if (existing !== undefined) {
               await github.rest.issues.updateComment({
@@ -310,6 +314,35 @@ jobs:
                 repo,
                 issue_number: prNumber,
                 body,
+              })
+            }
+
+      - name: Delete stale visual diff comment if no diffs
+        if: steps.compare.outputs.has_diffs == 'false'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const owner = context.repo.owner
+            const repo = context.repo.repo
+            const prNumber = context.payload.pull_request.number
+            const VISUAL_DIFF_COMMENT_MARKER = '<!-- visual-diff-bot -->'
+
+            const allComments = await github.paginate(github.rest.issues.listComments, {
+              owner,
+              repo,
+              issue_number: prNumber,
+              per_page: 100,
+            })
+
+            const existing = allComments.find(
+              (c) => c.user?.login === 'github-actions[bot]' && c.body?.includes(VISUAL_DIFF_COMMENT_MARKER),
+            )
+
+            if (existing !== undefined) {
+              await github.rest.issues.deleteComment({
+                owner,
+                repo,
+                comment_id: existing.id,
               })
             }
 
