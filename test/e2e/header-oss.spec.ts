@@ -73,7 +73,7 @@ test.describe('ハンバーガーメニューとOSSページ', () => {
 
     // 主要パッケージの見出しが表示される
     await expect(page.getByRole('heading', { name: 'Next.js' })).toBeVisible()
-    await expect(page.getByRole('heading', { name: 'React' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'React', exact: true })).toBeVisible()
 
     // ライセンス展開ボタン（details 要素）が存在する
     const licenseDetails = page.locator('details')
