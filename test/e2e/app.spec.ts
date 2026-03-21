@@ -250,7 +250,7 @@ test.describe('VRChat Photos FOV Fix - 正常系E2Eテスト', () => {
     await expect(page.locator('img[src*="blob:"]')).toHaveCount(1, { timeout: 5000 })
   })
 
-  test('同じ画像を再アップロードした警告が自動で消える', async ({ page }) => {
+  test('同じ画像を再アップロードした警告を手動で閉じられる', async ({ page }) => {
     await page.goto('/')
 
     const fileInputLocator = page.locator('input[type="file"]')
