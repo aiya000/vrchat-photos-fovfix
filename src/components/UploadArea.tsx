@@ -61,6 +61,7 @@ export function UploadArea({ t, onFilesSelected, imageCount }: UploadAreaProps):
         className="hidden"
         onChange={(e) => {
           handleFiles(e.target.files)
+          e.target.value = ''
         }}
       />
       <div className="flex flex-col items-center gap-3">

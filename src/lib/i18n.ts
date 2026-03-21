@@ -33,6 +33,7 @@ export interface Translations {
   ossPageTitle: string
   ossPageDescription: string
   ossLicenseLabel: string
+  duplicateImageWarning: (fileNames: string[]) => string
 }
 
 const translations: Record<Locale, Translations> = {
@@ -68,6 +69,8 @@ const translations: Record<Locale, Translations> = {
     ossPageTitle: 'Open Source Software',
     ossPageDescription: 'This application uses the following open source software.',
     ossLicenseLabel: 'License',
+    duplicateImageWarning: (fileNames: string[]): string =>
+      `The following images are already uploaded and were skipped: ${fileNames.join(', ')}`,
   },
   ja: {
     siteTitle: 'VRChat写真歪み修正ツール',
@@ -100,6 +103,8 @@ const translations: Record<Locale, Translations> = {
     ossPageTitle: '使用したOSS',
     ossPageDescription: 'このアプリケーションは以下のオープンソースソフトウェアを使用しています。',
     ossLicenseLabel: 'ライセンス',
+    duplicateImageWarning: (fileNames: string[]): string =>
+      `以下の画像はすでにアップロードされているためスキップされました: ${fileNames.join(', ')}`,
   },
 }
 
