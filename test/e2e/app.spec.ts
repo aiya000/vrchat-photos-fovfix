@@ -227,4 +227,51 @@ test.describe('VRChat Photos FOV Fix - 正常系E2Eテスト', () => {
     // ダウンロードボタンが有効であることを確認
     await expect(downloadButton).toBeEnabled()
   })
+
+  test('同じ画像を再アップロードしたときに警告が表示される', async ({ page }) => {
+    await page.goto('/')
+
+    const fileInputLocator = page.locator('input[type="file"]')
+    const testImagePath = path.join(__dirname, 'fixtures', 'test-photo.png')
+
+    // 1回目: 画像をアップロード
+    await fileInputLocator.setInputFiles(testImagePath)
+    await expect(page.locator('img[src*="blob:"]').first()).toBeVisible({ timeout: 10000 })
+
+    // 2回目: 同じ画像をアップロード
+    await fileInputLocator.setInputFiles(testImagePath)
+
+    // 警告ポップアップが表示されることを確認
+    const warningToast = page.getByTestId('duplicate-warning-toast')
+    await expect(warningToast).toBeVisible({ timeout: 5000 })
+    await expect(warningToast).toContainText(/test-photo\.png/)
+
+    // 画像が重複して追加されず、1枚のままであることを確認
+    await expect(page.locator('img[src*="blob:"]')).toHaveCount(1, { timeout: 5000 })
+  })
+
+  test('同じ画像を再アップロードした警告を手動で閉じられる', async ({ page }) => {
+    await page.goto('/')
+
+    const fileInputLocator = page.locator('input[type="file"]')
+    const testImagePath = path.join(__dirname, 'fixtures', 'test-photo.png')
+
+    // 1回目: 画像をアップロード
+    await fileInputLocator.setInputFiles(testImagePath)
+    await expect(page.locator('img[src*="blob:"]').first()).toBeVisible({ timeout: 10000 })
+
+    // 2回目: 同じ画像をアップロード
+    await fileInputLocator.setInputFiles(testImagePath)
+
+    // 警告ポップアップが表示されることを確認
+    const warningToast = page.getByTestId('duplicate-warning-toast')
+    await expect(warningToast).toBeVisible({ timeout: 5000 })
+
+    // ✕ボタンで閉じる
+    const closeButton = warningToast.locator('button')
+    await closeButton.click()
+
+    // 警告が消えることを確認
+    await expect(warningToast).not.toBeVisible({ timeout: 5000 })
+  })
 })

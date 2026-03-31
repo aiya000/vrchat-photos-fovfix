@@ -1,13 +1,15 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useMemo } from 'react'
 import { useI18n } from '@/lib/useI18n'
 import { applyFovFix, imageToCanvas, fovSchema } from '@/lib/fovfix'
+import { fileFingerprint, filterDuplicateFiles } from '@/lib/duplicateDetection'
 import type { UploadedImage, ProcessedImage, AppPhase } from '@/lib/types'
 import { ExampleSection } from '@/components/ExampleSection'
 import { UploadArea } from '@/components/UploadArea'
 import { ImageGrid } from '@/components/ImageGrid'
 import { ComparisonView } from '@/components/ComparisonView'
+import { DuplicateWarningToast } from '@/components/DuplicateWarningToast'
 import JSZip from 'jszip'
 
 function generateId(): string {
@@ -23,18 +25,35 @@ export default function Home(): React.JSX.Element {
   const [phase, setPhase] = useState<AppPhase>('upload')
   const [progress, setProgress] = useState({ current: 0, total: 0 })
   const [isDownloading, setIsDownloading] = useState(false)
+  const [duplicateWarning, setDuplicateWarning] = useState<string | null>(null)
 
-  const handleFilesSelected = useCallback((files: File[]) => {
-    const newImages: UploadedImage[] = files.map((file) => ({
-      id: generateId(),
-      file,
-      previewUrl: URL.createObjectURL(file),
-    }))
-    setUploadedImages((prev) => [...prev, ...newImages])
-    setPhase('upload')
-    setProcessedImages([])
-    setFovError(null)
-  }, [])
+  const existingFingerprints = useMemo(
+    () => new Set(uploadedImages.map((img) => fileFingerprint(img.file))),
+    [uploadedImages],
+  )
+
+  const handleFilesSelected = useCallback(
+    (files: File[]) => {
+      const { newFiles, duplicateFileNames } = filterDuplicateFiles(files, existingFingerprints)
+
+      if (duplicateFileNames.length > 0) {
+        setDuplicateWarning(t.duplicateImageWarning(duplicateFileNames))
+      }
+
+      if (newFiles.length === 0) return
+
+      const newImages: UploadedImage[] = newFiles.map((file) => ({
+        id: generateId(),
+        file,
+        previewUrl: URL.createObjectURL(file),
+      }))
+      setUploadedImages((prev) => [...prev, ...newImages])
+      setPhase('upload')
+      setProcessedImages([])
+      setFovError(null)
+    },
+    [existingFingerprints, t],
+  )
 
   const handleRemoveImage = useCallback((id: string) => {
     setUploadedImages((prev) => {
@@ -159,6 +178,14 @@ export default function Home(): React.JSX.Element {
 
   return (
     <main className="min-h-screen py-8 px-4">
+      {duplicateWarning !== null && (
+        <DuplicateWarningToast
+          message={duplicateWarning}
+          onClose={() => {
+            setDuplicateWarning(null)
+          }}
+        />
+      )}
       <div className="max-w-4xl mx-auto space-y-6">
         <header className="text-center">
           <h1 className="text-3xl font-bold">{t.siteTitle}</h1>
