@@ -137,6 +137,35 @@ test.describe('VRChat Photos FOV Fix - 正常系E2Eテスト', () => {
     await expect(page.locator('img[src*="blob:"]')).toHaveCount(0, { timeout: 5000 })
   })
 
+  test('FOV入力欄を空にするとバリデーションエラーが表示される', async ({ page }) => {
+    await page.goto('/')
+
+    const fileInputLocator = page.locator('input[type="file"]')
+    const testImagePath = path.join(__dirname, 'fixtures', 'test-photo.png')
+
+    await fileInputLocator.setInputFiles(testImagePath)
+    await expect(page.locator('img[src*="blob:"]').first()).toBeVisible({ timeout: 10000 })
+
+    const fovInput = page.locator('input[id="fov-input"]')
+
+    // FOV入力欄を空にする
+    await fovInput.fill('')
+
+    // 空文字のバリデーションエラーが表示されることを確認
+    const emptyError = page.locator('text=/FOV.*入力/i').or(page.locator('text=/enter.*FOV/i'))
+    await expect(emptyError).toBeVisible({ timeout: 5000 })
+
+    // 修正ボタンをクリックしても処理が進まないことを確認
+    const fixButton = page.getByRole('button', { name: /修正|Fix/i })
+    await fixButton.click()
+    const downloadButton = page.getByRole('button', { name: /ダウンロード|Download/i })
+    await expect(downloadButton).not.toBeVisible({ timeout: 5000 })
+
+    // 有効な値を入力するとエラーが消えることを確認
+    await fovInput.fill('50')
+    await expect(emptyError).not.toBeVisible({ timeout: 5000 })
+  })
+
   test('無効なFOV値に対するバリデーション', async ({ page }) => {
     await page.goto('/')
     

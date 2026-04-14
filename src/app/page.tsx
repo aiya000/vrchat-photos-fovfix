@@ -20,7 +20,7 @@ export default function Home(): React.JSX.Element {
   const { t } = useI18n()
   const [uploadedImages, setUploadedImages] = useState<UploadedImage[]>([])
   const [processedImages, setProcessedImages] = useState<ProcessedImage[]>([])
-  const [fov, setFov] = useState(50)
+  const [fov, setFov] = useState<number | ''>(50)
   const [fovError, setFovError] = useState<string | null>(null)
   const [phase, setPhase] = useState<AppPhase>('upload')
   const [progress, setProgress] = useState({ current: 0, total: 0 })
@@ -82,6 +82,11 @@ export default function Home(): React.JSX.Element {
   const handleFix = useCallback(async () => {
     if (uploadedImages.length === 0) return
 
+    if (fov === '') {
+      setFovError(t.fovEmptyError)
+      return
+    }
+
     const validation = fovSchema.safeParse(fov)
     if (!validation.success) {
       setFovError(t.fovError)
@@ -136,7 +141,7 @@ export default function Home(): React.JSX.Element {
 
     setProcessedImages(results)
     setPhase('result')
-  }, [uploadedImages, fov, t.fovError])
+  }, [uploadedImages, fov, t.fovError, t.fovEmptyError])
 
   const handleDownload = useCallback(async () => {
     if (processedImages.length === 0) return
@@ -212,6 +217,11 @@ export default function Home(): React.JSX.Element {
                   max={179}
                   value={fov}
                   onChange={(e) => {
+                    if (e.target.value === '') {
+                      setFov('')
+                      setFovError(t.fovEmptyError)
+                      return
+                    }
                     const v = parseInt(e.target.value, 10)
                     if (!isNaN(v)) {
                       setFov(v)
@@ -247,9 +257,9 @@ export default function Home(): React.JSX.Element {
               </div>
             </div>
             {fovError !== null && (
-              <div className="px-4 py-3 rounded-lg bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-800 text-red-800 dark:text-red-200 text-sm">
+              <p className="px-4 text-red-600 dark:text-red-400 text-sm">
                 {fovError}
-              </div>
+              </p>
             )}
           </div>
         )}
