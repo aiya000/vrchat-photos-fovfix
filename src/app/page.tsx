@@ -256,11 +256,7 @@ export default function Home(): React.JSX.Element {
                 </button>
               </div>
             </div>
-            {fovError !== null && (
-              <p className="px-4 text-red-600 dark:text-red-400 text-sm">
-                {fovError}
-              </p>
-            )}
+            {fovError !== null && <p className="px-4 text-red-600 dark:text-red-400 text-sm">{fovError}</p>}
           </div>
         )}
 
